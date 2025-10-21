@@ -13,10 +13,7 @@ features a timeline. The timeline in particular is a feature that I may usee in 
 
 ## Approaches I've considered to this app
 
-I have extensive thoughts and laid out a roadmap of all of the features I would like to have in this app. I even had ideas that did not make the final cut due to potential time restraints,
-however these could come into play if I believe I do have time come the end of the development. One of these features is not doing it by just country, but doing it by city, because I thought
-about how sometimes people go to the same country several times but they go to a different place within the country. A way I can work around this more simply is to allow the user to have some tags on the countries with the cities they visited, and split any photos up into these tags as well. I am going to make sure each user's experience is different to cater for many different audiences. An example of this is how I'm planning on implementing a settings page where the user can say whether they dont like beach holidays or city breaks or hot countries or cold countries etcetera.
-I have also considered potentially considering having different views if the user is either a traveller or just interested in going on a holiday and not sure where to go.
+I originally considered recreating ThisIsSand.com to use AI to turn the image of the sand into an AI generated image of some mountains that looked like that piece of art that was created. I decided against this because I quickly became uninterested in it as a project and couldn't really think how I could make it more entertaining for the user. It was one of those ideas that would've got boring for the user very quickly
 
 ## How will I use Data?
 
