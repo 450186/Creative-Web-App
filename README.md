@@ -25,7 +25,7 @@ Each user will have an account. the data will be stored per user. the data that 
 
 ## How will it present a novel user experience?
 
-In order to present a novel user experience, I had the idea to make it possible to zoom in and out of the world map using hand gestures like pinch and pinch out. There may also be an opportunity to use voice control to find countries rather than typing them into a search bar or finding them on the map. 
+To make it more of a novel user experience, I may decide to add a feature where users can agree to share their photos of the place to other users viewing the location, this may give users thinking about going here a better idea of what it looks like there. Users will also give their review of this place and potentially a star rating. This should hopefully give users looking to go there see whether it's still somewhere they want to go.
 
 ## Who is the target audience for this app?
 
