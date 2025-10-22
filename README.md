@@ -11,9 +11,9 @@ after extensive research there is a mobile application that is similar called 'B
 how much of the world you've seen and the percentage of each continent they have explored. due to it being a mobile app there is an option to make a widget of it on your IOS device. It also 
 features a timeline. The timeline in particular is a feature that I may usee in my web app that I wasn't previously accounting for when I knew I wanted to do this app.
 
-## Approaches I've considered to this app
+## Approaches I considered
 
-I originally considered recreating ThisIsSand.com to use AI to turn the image of the sand into an AI generated image of some mountains that looked like that piece of art that was created. I decided against this because I quickly became uninterested in it as a project and couldn't really think how I could make it more entertaining for the user. It was one of those ideas that would've got boring for the user very quickly
+I originally considered recreating ThisIsSand.com to use AI to turn the image of the sand into an AI generated image of some mountains that looked like that piece of art that was created. I decided against this because I quickly became uninterested in it as a project and couldn't really think how I could make it more entertaining for the user. It was one of those ideas that would've got boring for the user very quickly.
 
 ## How will I use Data?
 
