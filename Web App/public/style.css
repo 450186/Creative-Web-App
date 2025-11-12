@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -15,6 +16,7 @@ html, body {
     margin: auto;
     border-radius: 50px;
 }
+
 .Heading {
     margin: 10px;
     display: flex;
@@ -23,12 +25,14 @@ html, body {
     position: relative;
     width: 100%;
 }
+
 .title {
     flex: 2;
     font-size: 48px;
     font-weight: bold;
     text-align: center;
 }
+
 /* Navigation styles */
 .Hamburger {
     flex: 1;
@@ -38,26 +42,27 @@ html, body {
     right: 40px;
     font-weight: bold;
 }
+
 .sidenav {
-  height: 100%;
-  width: 0;
-  position: fixed;
-  z-index: 1500;
-  top: 0;
-  right: 0;
-  background-color: #9BCF9E;
-  overflow-x: hidden;
-  transition: 0.5s;
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1500;
+    top: 0;
+    right: 0;
+    background-color: #9BCF9E;
+    overflow-x: hidden;
+    transition: 0.5s;
 }
 
 .sidenav a {
-  padding: 40px;
-  padding-left: 20px;
-  text-decoration: none;
-  font-size: 25px;
-  color: #145A32;
-  display: block;
-  transition: 0.3s;
+    padding: 40px;
+    padding-left: 20px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #145A32;
+    display: block;
+    transition: 0.3s;
 }
 
 .sidenav a:nth-child(2) {
@@ -65,21 +70,23 @@ html, body {
 }
 
 .sidenav a:hover {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .sidenav .closebtn {
-  position: absolute;
-  padding: 0px;
-  right: 20px;
-  font-size: 60px;
-  flex: 1
+    position: absolute;
+    padding: 0px;
+    right: 20px;
+    font-size: 60px;
+    flex: 1
 }
+
 .sidenav-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 .nav-header {
     flex: 2;
 }
@@ -92,13 +99,16 @@ form {
     margin-right: auto;
     text-align: center;
 }
-input[type="text"], input[type="password"] {
+
+input[type="text"],
+input[type="password"] {
     width: 30%;
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #145A32;
     border-radius: 5px;
 }
+
 input[type="submit"] {
     background-color: #1CFF29;
     color: #145A32;
@@ -107,6 +117,7 @@ input[type="submit"] {
     border-radius: 5px;
     cursor: pointer;
 }
+
 input[type="submit"]:hover {
     background-color: #16CC21;
     font-weight: bold;
