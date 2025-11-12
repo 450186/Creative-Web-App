@@ -29,6 +29,7 @@ html, body {
     font-weight: bold;
     text-align: center;
 }
+/* Navigation styles */
 .Hamburger {
     flex: 1;
     font-size: 48px;
@@ -47,11 +48,10 @@ html, body {
   background-color: #9BCF9E;
   overflow-x: hidden;
   transition: 0.5s;
-  padding-top: 60px;
 }
 
 .sidenav a {
-  padding: 60px;
+  padding: 40px;
   padding-left: 20px;
   text-decoration: none;
   font-size: 25px;
@@ -60,8 +60,11 @@ html, body {
   transition: 0.3s;
 }
 
+.sidenav a:nth-child(2) {
+    padding-top: 0px;
+}
+
 .sidenav a:hover {
-  /* color:; */
   font-weight: bold;
 }
 
@@ -73,11 +76,38 @@ html, body {
   flex: 1
 }
 .sidenav-header {
-    top: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 .nav-header {
     flex: 2;
+}
+
+/* Login Styles */
+form {
+    margin-bottom: 20px;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+input[type="text"], input[type="password"] {
+    width: 30%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #145A32;
+    border-radius: 5px;
+}
+input[type="submit"] {
+    background-color: #1CFF29;
+    color: #145A32;
+    padding: 8px 16px;
+    border: 1px solid #145A32;
+    border-radius: 5px;
+    cursor: pointer;
+}
+input[type="submit"]:hover {
+    background-color: #16CC21;
+    font-weight: bold;
 }
