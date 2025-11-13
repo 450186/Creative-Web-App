@@ -67,6 +67,10 @@ app.get("/history", (req, res) => {
     res.sendFile(path.join(__dirname, "views", "History.html"))
 })
 
+app.get("/location", (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "Location.html"))
+})
+
 app.get("/settings", (req, res) => {
     res.sendFile(path.join(__dirname, "views", "Settings.html"))
 })

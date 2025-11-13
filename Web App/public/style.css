@@ -55,6 +55,14 @@ body {
     transition: 0.5s;
 }
 
+a:visited {
+    color: #145A32;
+}
+
+a:hover {
+    font-weight: bold;
+}
+
 .sidenav a {
     padding: 40px;
     padding-left: 20px;
@@ -91,13 +99,21 @@ body {
     flex: 2;
 }
 
-/* Login Styles */
+/* Form Styles */
 form {
     margin-bottom: 20px;
     width: 60%;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+}
+
+label {
+    display: inline-block;
+}
+
+.location-form label{
+    margin: 20px;
 }
 
 input[type="text"],
@@ -109,7 +125,7 @@ input[type="password"] {
     border-radius: 5px;
 }
 
-input[type="submit"] {
+input[type="submit"], select {
     background-color: #1CFF29;
     color: #145A32;
     padding: 8px 16px;
@@ -118,7 +134,21 @@ input[type="submit"] {
     cursor: pointer;
 }
 
-input[type="submit"]:hover {
+input[type="submit"]:hover, select:hover {
     background-color: #16CC21;
     font-weight: bold;
+}
+input[type="file"] {
+    width: 180px;
+    margin: 10px;
+    margin-left: 0px
+}
+textarea {
+    width: 60%;
+    border-radius: 5px;
+    border: 1px solid #145A32;
+    margin: 10px
+}
+hr {
+    border: 1px solid #145A32;
 }
