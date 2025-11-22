@@ -9,6 +9,10 @@ body {
     font-size: large;
     font-weight: 550;
 }
+body {
+    display: flex;
+    flex-direction: column;
+}
 
 #map {
     height: 500px;
@@ -101,7 +105,6 @@ a:hover {
 
 /* Form Styles */
 form {
-    margin-bottom: 20px;
     width: 60%;
     margin-left: auto;
     margin-right: auto;
@@ -132,6 +135,7 @@ input[type="submit"], select {
     border: 1px solid #145A32;
     border-radius: 5px;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 input[type="submit"]:hover, select:hover {
@@ -151,4 +155,19 @@ textarea {
 }
 hr {
     border: 1px solid #145A32;
+}
+.content {
+    flex: 1;
+}
+#errorMessage {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+}
+footer {
+    text-align: right;
+    font-weight: bold;
+    margin-right: 20px;
+    padding: 1rem;
+    padding-bottom: 0px;
 }

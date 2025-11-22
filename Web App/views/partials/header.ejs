@@ -3,25 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title></title>
-    <link rel="stylesheet" href="style.css">
+    <title> <%= title %> </title>
+    <% if(title === "Home"){ %>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <% } %>
+    <script src="NavBar.js" defer></script>
+
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
         <div id="mySidenav" class="sidenav">
         <div class="sidenav-header">
             <a class="nav-header" href="">
-                <h2><%= title></h2>
+                <h2> <%= title %> </h2>
             </a>
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         </div>
 
-        <a href="history" class="">History</a>
-        <a href="wishlist" class="">Wishlist</a>
-        <a href="settings" class="">Settings</a>
-        <a href="account" class="">Account</a>
-        <a href="logout" class="">Logout</a>
+        <% 
+        const pages = [
+            {name: "Home", path: "/home"},
+            {name: "History", path: "/history"},
+            {name: "Wishlist", path: "/wishlist"},
+            {name: "Settings", path: "/settings"},
+            {name: "Account", path: "/account"}
+        ];
+        %>
+        <% if(title !== "Login" || title !== "Register") { %> 
+            <% pages.forEach(page => { %>
+                <% if(page.name !== title) { %>
+                    <a href=" <%= page.path %> "> <%= page.name %> </a>
+                <% } %>
+            <% }) %>
+        <% } %>
+
     </div>
     <div class="Heading">
-        <h1 class="title">Location</h1>
-        <p onclick="openNav()" class="Hamburger">&#8801;</p>
+        <h1 class="title"> TraveLR </h1>
+        <% if(title !== "Login" || title !== "Register") { %>
+            <p onclick="openNav()" class="Hamburger">&#8801;</p>        
+        <% } %>
     </div>
+    <div class="content">
+        <h2 style="text-align: center;"> <%= title %> </h2>

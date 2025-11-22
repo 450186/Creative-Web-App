@@ -2,19 +2,23 @@ const mongoose = require("mongoose");
 
 const {Schema, model} = mongoose;
 
-// const PlacesVisitedSchema = new Schema({
-//     placeName: {type: String, required: true},
-//     dateVisited: {type: String, required: true},
-//     countryCode: {type: String, required: true},
-//     photos: [{type: String}],
-//     notes: String,
-//     rating: {type: Number, min: 1, max: 5},
-// })
+const PlacesVisitedSchema = new Schema({
+    city: {type: String, required: true},
+    country: {type: String, required: true},
+    dateVisited: {
+        startDate: { type: String, required: true },
+        endDate: { type: String, required: true }
+    },
+    countryCode: {type: String, required: true},
+    photos: {type: String},
+    notes: {type: String},
+    rating: {type: Number, min: 1, max: 5},
+})
 
 const userSchema = new Schema({
     username: String,
     password: String,
-    // PlacesVisited: [PlacesVisitedSchema],
+    PlacesVisited: [PlacesVisitedSchema],
 })
 
 const userData = model("user", userSchema);
@@ -52,4 +56,5 @@ async function checkUser(username, password) {
 module.exports = {
     addUser,
     checkUser,
+    userData
 }

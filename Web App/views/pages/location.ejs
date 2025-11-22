@@ -1,0 +1,62 @@
+<%- include("../partials/header") %>
+    <h2 id="location-name" style="text-align: center;"></h2>
+
+    <h3 style="text-align: center;"><%= city %></h3>
+
+    <!-- <p><%= latitude %></p><br>
+    <p><%= longitude %></p> -->
+    <h2 style="text-align: center;">Visited here before?</h2>
+    <div style="text-align: center;">
+        <input type="radio" name="visited" value="Yes" id="yes-radio">
+        <label for="Yes">Yes</label>
+        <input type="radio" name="visited" value="No" id="no-radio" checked>
+        <label for="No">No</label>
+    </div>
+    <% if (typeof errorMessage !== 'undefined') { %>
+        <p id="errorMessage"><%= errorMessage %></p>
+    <% } %>
+    <form id="location-form" 
+    method="POST" 
+    style="padding-top: 10px; display: none;" 
+    action="add-location"
+    >
+        <input type="hidden" name="city" value="<%= city || "" %>">
+        <input type="hidden" name="country" value="<%= country %>">
+        <input type="hidden" name="countryCode" value="<%= countryCode %>">
+        <label for="visit-date">When did you visit</label>
+        <div id="date-select">
+            <input type="date" id="visit-date-start" name="visitDateStart">
+            <label for="to-date">To:</label>
+            <input type="date" id="visit-date-end" name="visitDateEnd">
+        </div>
+        <label for="photos">Photos:</label>
+        <input type="file" id="photos-upload" name="photos" multiple><hr>
+        <label style="vertical-align: baseline;" for="notes">Notes:</label>
+        <textarea id="notes" name="notes" rows="4" cols="25"></textarea><hr>
+        <label for="rating">Rating:</label>
+        <select id="rating" name="rating">
+            <option value="1">1⭐️</option>
+            <option value="2">2⭐️</option>
+            <option value="3">3⭐️</option>
+            <option value="4">4⭐️</option>
+            <option value="5">5⭐️</option>
+        </select><br>
+        <input style="margin-top: 10px;" type="submit" value="Add to History">
+    </form>
+    <script defer>
+        let yesRadio = document.getElementById("yes-radio")
+        let noRadio = document.getElementById("no-radio")
+        let locationForm = document.getElementById("location-form")
+        yesRadio.addEventListener("change", () => {
+            if(yesRadio.checked) {
+                locationForm.style.display = "block"
+            } 
+        })
+        noRadio.addEventListener("change", () => {
+            if(noRadio.checked) {
+                locationForm.style.display = "none"
+            }
+        })
+        
+    </script>
+<%- include("../partials/footer") %>
