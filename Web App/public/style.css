@@ -153,9 +153,7 @@ textarea {
     border: 1px solid #145A32;
     margin: 10px
 }
-hr {
-    border: 1px solid #145A32;
-}
+
 .content {
     flex: 1;
 }
@@ -163,6 +161,22 @@ hr {
     color: red;
     font-weight: bold;
     text-align: center;
+}
+#location-form {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background-color:  #1d854a;
+    border-radius: 50px;
+    box-shadow: 5px 10px 15px 5px #145A32;
+    color: white;
+    padding: 10px;
+}
+#notes-div {
+    display: inline-block;
+}
+#notes-div label {
+    vertical-align: text-top;
 }
 footer {
     text-align: right;

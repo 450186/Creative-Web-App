@@ -97,14 +97,14 @@ app.get("/location", checkLogin ,async (req, res) => {
     })
     const data = await response.json()
     const Country = data.address?.country
-    const City = data.address?.city || data.address?.town
+    const City = data.address?.city || data.address?.town || data.address?.village || data.address?.municipality
+    const countryCode = data.address.country_code
+    // const codeGet = await fetch(
+    //     `https://restcountries.com/v3.1/name/${Country}?fullText=true`
+    // )
 
-    const codeGet = await fetch(
-        `https://restcountries.com/v3.1/name/${Country}?fullText=true`
-    )
-
-    const codeData = await codeGet.json()
-    countryCode = codeData?.[0]?.cca2
+    // const codeData = await codeGet.json()
+    // countryCode = codeData?.[0]?.cca2 || codeData?.[0]?.cca3
 
     res.render('pages/location', {
         username: req.session.username,

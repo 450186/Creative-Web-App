@@ -5,8 +5,8 @@
 
     <!-- <p><%= latitude %></p><br>
     <p><%= longitude %></p> -->
-    <h2 style="text-align: center;">Visited here before?</h2>
-    <div style="text-align: center;">
+    <h2 style="text-align: center; margin-bottom: 0px;">Visited here before?</h2>
+    <div style="text-align: center; margin-top: 0px; margin-bottom: 10px;">
         <input type="radio" name="visited" value="Yes" id="yes-radio">
         <label for="Yes">Yes</label>
         <input type="radio" name="visited" value="No" id="no-radio" checked>
@@ -23,16 +23,19 @@
         <input type="hidden" name="city" value="<%= city || "" %>">
         <input type="hidden" name="country" value="<%= country %>">
         <input type="hidden" name="countryCode" value="<%= countryCode %>">
-        <label for="visit-date">When did you visit</label>
+        <label for="visit-date">When did you visit?</label>
         <div id="date-select">
             <input type="date" id="visit-date-start" name="visitDateStart">
             <label for="to-date">To:</label>
             <input type="date" id="visit-date-end" name="visitDateEnd">
         </div>
         <label for="photos">Photos:</label>
-        <input type="file" id="photos-upload" name="photos" multiple><hr>
-        <label style="vertical-align: baseline;" for="notes">Notes:</label>
-        <textarea id="notes" name="notes" rows="4" cols="25"></textarea><hr>
+        <input type="file" id="photos-upload" name="photos" multiple><br>
+        <div id="notes-div">
+            <label style="vertical-align: baseline;" for="notes">Notes:</label>
+            <textarea id="notes" name="notes" rows="4" cols="25"></textarea><br>            
+        </div>
+<br>
         <label for="rating">Rating:</label>
         <select id="rating" name="rating">
             <option value="1">1⭐️</option>
