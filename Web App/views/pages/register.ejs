@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+
+    <form action="/register" method="POST">
+        <label>Username</label>
+        <input type="text" id="username" name="username" required><br>
+        <label>Password</label>
+        <input type="password" id="password" name="password" required><br>
+        <label>First Name</label>
+        <input type="text" id="Firstname" name="Firstname" required><br>
+        <label>Last Name</label>
+        <input type="text" id="Lastname" name="Lastname" required><br>
+        <input type="submit" value="Register">
+    </form>
+
+    <% if(typeof errorMessage !== 'undefined') { %>
+        <p id="errorMessage"> <%= errorMessage %> </p>
+    <% } %>
+
+<%- include('../partials/footer') %>

@@ -44,9 +44,10 @@ body {
     cursor: pointer;
     position: absolute;
     right: 40px;
+}
+.Hamburger:hover {
     font-weight: bold;
 }
-
 .sidenav {
     height: 100%;
     width: 0;
@@ -162,7 +163,7 @@ textarea {
     font-weight: bold;
     text-align: center;
 }
-#location-form {
+#location-form, #location-div {
     display: flex;
     flex-direction: column;
     padding: 10px;
@@ -172,12 +173,26 @@ textarea {
     color: white;
     padding: 10px;
 }
+#location-div {
+    justify-content: center;
+    align-items: center;
+    width: 75%;
+    margin: auto;
+    margin-bottom: 20px;
+}
+#location-div p {
+    margin-bottom: 0;
+}
+#location-div p:nth-child(2) {
+    font-weight: bold;
+}
 #notes-div {
     display: inline-block;
 }
 #notes-div label {
     vertical-align: text-top;
 }
+
 footer {
     text-align: right;
     font-weight: bold;

@@ -1,5 +1,23 @@
 <%- include("../partials/header") %>
 
+<% if (locations.length === 0) { %>
+    <p id="errorMessage">No Locations Added</p>
+    <p>Visit <a href="home">Home</a> to add locations</p>
+<% } %>
 
+<% locations.forEach(location => { %>
+    <div id="location-div">
+        <h2><%= location.country %></h2>
+        <h3><%= location.city %></h3>
+        <hr style="width: 100%;">
+        <p style="margin-bottom: 0;"><%= location.formattedStart %></p>
+        <p style="margin-bottom: 0; font-weight: bold;"> to </p>
+        <p style="margin-bottom: 0;"><%= location.formattedEnd %></p>
+        <p style="font-weight: bold; margin-bottom: 0;">Thoughts:</p>
+        <p style="margin-bottom: 0;"><%= location.notes %></p>
+        <p style="font-weight: bold; margin-bottom: 0;">Rating:</p>
+        <p><%= location.rating %></p>
+    </div>    
+<% }) %>
 
 <%- include("../partials/footer") %>

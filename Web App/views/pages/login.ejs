@@ -7,6 +7,9 @@
         <input type="password" id="password" name="password" required><br>
         <input type="submit" value="Login">
     </form>
+    <% if (typeof errorMessage !== 'undefined') { %>
+        <p id="errorMessage"><%= errorMessage %></p>
+    <% } %> 
     <p style="text-align: center;">Don't have an account? <a href="/register">Register here</a></p>
 
 

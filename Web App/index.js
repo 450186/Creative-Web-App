@@ -12,11 +12,12 @@ const userModel = require("./models/users.js")
 
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const dayjs = require("dayjs")
 
 const dotenv = require("dotenv").config();
 
 
-const threeMin = 3 * 60 * 1000;
+const fiveMin = 5 * 60 * 1000;
 
 const mongoDBusername = process.env.mongoDBusername;
 const mongoDBpassword = process.env.mongoDBpassword;
@@ -25,7 +26,7 @@ const mongoAppName = process.env.mongoAppName;
 app.use(session({
     secret: "SecretKeyForSession",
     saveUninitialized: true,
-    cookie: { maxAge: threeMin },
+    cookie: { maxAge: fiveMin},
     resave: false,
 }))
 
@@ -58,6 +59,16 @@ function checkLoggedin(request) {
     return request.session && request.session.username
 }
 
+function format(d) {
+    return dayjs(d).format("dddd, DD MMM YYYY")
+}
+function ASCII(string) {
+    return string.normalize("NFD")
+    //normalize NFD takes the string and "decomposes" the string (non-Latin letters seperated)
+        .replace(/[^A-Za-z]/g, "")
+    //regex that replaces everything in the string with isnt A-Z or a-z with a blank - gets rid of accents etc
+}
+
 app.get("/", checkLogin, (req, res) => {
     res.redirect("/login")
 })
@@ -78,11 +89,27 @@ app.get("/wishlist", checkLogin, (req, res) => {
     })
 })
 
-app.get("/history", checkLogin, (req, res) => {
+app.get("/history", checkLogin, async (req, res) => {
+    let username = req.session.username
+
+    let allLocations = await userModel.userData.findOne({username: username}, {
+        _id: 0,
+        password: 0,
+        __v: 0
+    })
+
+    const formatLocation = allLocations.PlacesVisited.map(loc => ({
+        ...loc.toObject(),//stop from making brand new object, keep previous data and add new fields
+        formattedStart: format(loc.dateVisited.startDate),
+        formattedEnd: format(loc.dateVisited.endDate)
+    }))
+
+    console.log(allLocations.PlacesVisited)
     res.render('pages/history', {
-        username: req.session.username,
+        username: username,
         Loggedin: checkLoggedin(req),
         title: "History",
+        locations: formatLocation,
     })
 })
 
@@ -96,9 +123,12 @@ app.get("/location", checkLogin ,async (req, res) => {
         headers: {"User-Agent" : "TravelrApp"} //nominatim requires this to identify app and stop nominatim from blocking my app
     })
     const data = await response.json()
-    const Country = data.address?.country
-    const City = data.address?.city || data.address?.town || data.address?.village || data.address?.municipality
+    const Country = ASCII(data.address?.country)
+    const City = ASCII(data.address?.city || data.address?.town || data.address?.village || data.address?.municipality)
     const countryCode = data.address.country_code
+
+
+    countryCode.toUpperCase()
     // const codeGet = await fetch(
     //     `https://restcountries.com/v3.1/name/${Country}?fullText=true`
     // )
@@ -172,7 +202,6 @@ app.post("/add-location", checkLogin, async (req, res) => {
 
 })
 
-
 app.get("/settings", (req, res) => {
     res.render('pages/settings', {
         username: req.session.username,
@@ -200,7 +229,10 @@ app.post("/login", async (req, res) => {
         req.session.username = req.body.username;
         res.redirect("/home")
     } else {
-        res.sendFile(path.join(__dirname, "views", "failedLogin.html"))
+        res.render('pages/login', {
+            title: "Login",
+            errorMessage: "Username or Password Incorrect!"
+        })
     }
 });
 
@@ -215,7 +247,10 @@ app.post("/register", async (req, res) => {
         req.session.username = req.body.username
         res.redirect("/home")
     } else {
-        res.sendFile(path.join(__dirname, "views", "failedRegister.html"))
+        res.render('pages/register', {
+            errorMessage: "Username is already in use!",
+            title: "Home",
+        })
     }
 });
 

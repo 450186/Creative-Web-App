@@ -31,7 +31,8 @@
             {name: "Account", path: "/account"}
         ];
         %>
-        <% if(title !== "Login" || title !== "Register") { %> 
+
+        <% if(title !== "Login" && title !== "Register") { %> 
             <% pages.forEach(page => { %>
                 <% if(page.name !== title) { %>
                     <a href=" <%= page.path %> "> <%= page.name %> </a>
@@ -42,9 +43,10 @@
     </div>
     <div class="Heading">
         <h1 class="title"> TraveLR </h1>
-        <% if(title !== "Login" || title !== "Register") { %>
+        <% if(title !== "Login" && title !== "Register") { %>
             <p onclick="openNav()" class="Hamburger">&#8801;</p>        
         <% } %>
+
     </div>
     <div class="content">
         <h2 style="text-align: center;"> <%= title %> </h2>
