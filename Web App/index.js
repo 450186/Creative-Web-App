@@ -73,11 +73,21 @@ app.get("/", checkLogin, (req, res) => {
     res.redirect("/login")
 })
 
-app.get("/home", checkLogin, (req, res) => {
+app.get("/home", checkLogin, async (req, res) => {
+
+    let username = req.session.username
+
+    let locationData = await userModel.userData.findOne({username: username}, {
+        _id: 0,
+        password: 0,
+        __v: 0
+    })
+
     res.render('pages/home', {
-        username: req.session.username,
+        username: username,
         Loggedin: checkLoggedin(req),
         title: "Home",
+        locations: locationData
     })
 })
 
@@ -129,12 +139,6 @@ app.get("/location", checkLogin ,async (req, res) => {
 
 
     countryCode.toUpperCase()
-    // const codeGet = await fetch(
-    //     `https://restcountries.com/v3.1/name/${Country}?fullText=true`
-    // )
-
-    // const codeData = await codeGet.json()
-    // countryCode = codeData?.[0]?.cca2 || codeData?.[0]?.cca3
 
     res.render('pages/location', {
         username: req.session.username,
@@ -161,7 +165,9 @@ app.post("/add-location", checkLogin, async (req, res) => {
             visitDateEnd,
             notes,
             rating,
-            photos
+            photos,
+            longitude,
+            latitude
         } = req.body
         
         const newLoc = {
@@ -171,6 +177,8 @@ app.post("/add-location", checkLogin, async (req, res) => {
                 startDate: visitDateStart,
                 endDate: visitDateEnd
             },
+            longitude,
+            latitude,
             countryCode,
             photos,
             notes,

@@ -9,6 +9,8 @@ const PlacesVisitedSchema = new Schema({
         startDate: { type: String, required: true },
         endDate: { type: String, required: true }
     },
+    longitude: {type: String, required: true},
+    latitude: {type: String, required: true},
     countryCode: {type: String, required: true},
     photos: {type: String},
     notes: {type: String},
