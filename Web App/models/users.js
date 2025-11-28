@@ -9,18 +9,26 @@ const PlacesVisitedSchema = new Schema({
         startDate: { type: String, required: true },
         endDate: { type: String, required: true }
     },
-    longitude: {type: String, required: true},
-    latitude: {type: String, required: true},
+    longitude: {type: Number, required: true},
+    latitude: {type: Number, required: true},
     countryCode: {type: String, required: true},
     photos: {type: String},
     notes: {type: String},
     rating: {type: Number, min: 1, max: 5},
+})
+const WishListSchema = new Schema({
+    city: {type: String, required: true},
+    country: {type: String, required: true},
+    longitude: {type: Number, required: true},
+    latitude: {type: Number, required: true},
+    countryCode: {type: String, required: true},
 })
 
 const userSchema = new Schema({
     username: String,
     password: String,
     PlacesVisited: [PlacesVisitedSchema],
+    wishList: [WishListSchema]
 })
 
 const userData = model("user", userSchema);

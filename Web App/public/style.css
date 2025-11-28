@@ -8,17 +8,12 @@ body {
     color: #145A32;
     font-size: large;
     font-weight: 550;
+    overflow-x: hidden;
+    font-family: "Montserrat", sans-serif;
 }
 body {
     display: flex;
     flex-direction: column;
-}
-
-#map {
-    height: 500px;
-    width: 80%;
-    margin: auto;
-    border-radius: 50px;
 }
 
 .Heading {
@@ -163,6 +158,12 @@ textarea {
     font-weight: bold;
     text-align: center;
 }
+#successMessage {
+    color: green;
+    font-weight: bold;
+    text-align: center;
+}
+/* Forms */
 #location-form, #location-div {
     display: flex;
     flex-direction: column;
@@ -173,13 +174,19 @@ textarea {
     color: white;
     padding: 10px;
 }
+/* History Page */
 #location-div {
     justify-content: center;
     align-items: center;
     width: 75%;
     margin: auto;
     margin-bottom: 20px;
+    max-width: 50%;
 }
+#location-div h3 {
+    margin-top: 0px;
+}
+
 #location-div p {
     margin-bottom: 0;
 }
@@ -192,6 +199,50 @@ textarea {
 #notes-div label {
     vertical-align: text-top;
 }
+/* Map Styling */
+#map-container {
+    display: flex;
+    flex-flow: row;
+    margin: auto;
+    text-align: center;
+}
+#map {
+    height: 500px;
+    width: 60%;
+    margin-right: 10px;
+    border-radius: 50px;
+    margin-left: auto;
+}
+#key-div {
+    display: flex;
+    flex-flow: column;
+    margin-right: auto;
+}
+.key {
+    display: flex;
+    flex-flow: row;
+    text-align: center;
+}
+.pins {
+    width: 50px;
+}
+.key-text {
+    text-align: center;
+}
+#green-div, #gold-div {
+    background-color: #1d854a;
+    color: white;
+    box-shadow: 5px 10px 15px 5px #145A32;
+    border-radius: 50px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 80%;
+    margin-left: auto;
+}
 
 footer {
     text-align: right;
@@ -199,4 +250,20 @@ footer {
     margin-right: 20px;
     padding: 1rem;
     padding-bottom: 0px;
+}
+/* Leaflet popup */
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+    background-color: #1d854a;
+    box-shadow: 5px 10px 15px 5px #145A32;
+}
+.leaflet-popup-content {
+    text-align: center;
+    color: white;
+}
+.leaflet-popup-close-button {
+    color: white !important;
+    opacity: 1;
+}
+.leaflet-popup-close-button:hover {
+    color: rgb(255, 3, 3) !important;
 }

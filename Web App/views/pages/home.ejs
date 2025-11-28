@@ -1,8 +1,40 @@
 <%- include("../partials/header") %>
 
-<p style="text-align: center;">Welcome to TravLR, your ultimate travel
-    companion!</p>
-<div id="map"></div>
+<p style="text-align: center;">Welcome to TravLR, your ultimate travel companion!</p>
+<% if (typeof errorMessage !== 'undefined') { %>
+    <p id="errorMessage" style="text-align: center;"><%= errorMessage %></p>
+<% } %>
+<% if (typeof successMessage !== 'undefined') { %>
+    <p id="successMessage" style="text-align: center;"><%= successMessage %></p>
+<% } %>
+<div id="map-container">
+    <div id="map"></div>
+    <div id="location-data" data-wishlist="<%= JSON.stringify(wishList) %>" data-locations="<%= JSON.stringify(locations) %>"></div>
+    <div id="key-div">
+        <h3>Key:</h3>
+        <div class="key">
+            <div id="green-div">
+                <img class="pins" src="/assets/GreenPin.png" alt="Green Pin">
+                <div class="key-text">
+                    <p>Places You've Visited</p>
+                    <label id="green-label" for="green-check">{greenLabel}</label>
+                    <input checked type="checkbox" id="green-check">                
+                </div>                
+            </div>
+        </div>
+            <div class="key">
+                <div id="gold-div">
+                <img class="pins" src="/assets/GoldPin.png" alt="Gold Pin">
+                <div class="key-text">
+                    <p>Places You Would Like to Visit</p>
+                    <label id="gold-label" for="gold-check">{goldLabel}</label>
+                    <input checked type="checkbox" id="gold-check">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     var map = L.map('map').setView([20, 0], 2);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -16,6 +48,80 @@
 
         window.location.href = `/location?latitude=${latitude}&longitude=${longitude}`
     })
+
+    const GreenPin = L.icon({
+        iconUrl: "/assets/GreenPin.png",
+        iconSize: [25, 30],
+        iconAnchor: [17, 30],
+        popupAnchor: [-5, -34]
+    })
+    const GoldPin = L.icon({
+        iconUrl: "/assets/GoldPin.png",
+        iconSize: [25, 30],
+        iconAnchor: [17, 30],
+        popupAnchor: [-5, -34]   
+    })
+
+    //https://github.com/Digitalbrainstem/ejs-grammar/issues/78
+
+    const locationData = document.getElementById("location-data")
+    const Userlocations = JSON.parse(locationData.dataset.locations)
+    const wishlistLocs= JSON.parse(locationData.dataset.wishlist)
+    let greenCheck = document.getElementById("green-check")
+    let goldCheck = document.getElementById("gold-check")
+    let greenLabel = document.getElementById("green-label")
+    let goldLabel = document.getElementById("gold-label")
+
+    let greenPins = []
+    let goldPins = []
+
+    Userlocations.forEach(location => {
+        if(!location.longitude || !location.latitude) return
+        const green = L.marker([location.latitude, location.longitude], {icon: GreenPin})
+        .addTo(map)
+        .bindPopup(`<strong>${location.city}</strong>
+        <br>
+        <em>${location.country}</em>
+        <br>
+        ${location.rating}⭐️`)
+        greenPins.push(green)
+    });
+    wishlistLocs.forEach(wishlistLoc => {
+        if(!wishlistLoc.longitude || !wishlistLoc.latitude) return
+        const gold = L.marker([wishlistLoc.latitude, wishlistLoc.longitude], {icon: GoldPin})
+        .addTo(map)
+        .bindPopup(`<strong>${wishlistLoc.city}</strong>
+        <br>
+        <em>${wishlistLoc.country}</em>
+        <br>`)
+        goldPins.push(gold)
+    })
+    function updateGreens() {
+        if(greenCheck.checked) {
+            greenPins.forEach(m => m.addTo(map))
+            greenLabel.textContent = "Hide"
+
+        } else {
+            greenPins.forEach(m => map.removeLayer(m))
+            greenLabel.textContent = "Show"
+
+        }
+    }
+        function updateGolds() {
+        if(goldCheck.checked) {
+            goldPins.forEach(m => m.addTo(map))
+            goldLabel.textContent = "Hide"
+
+        } else {
+            goldPins.forEach(m => map.removeLayer(m))
+            goldLabel.textContent = "Show"
+
+        }
+    }
+    updateGreens()
+    updateGolds()
+    greenCheck.addEventListener("change", updateGreens)
+    goldCheck.addEventListener("change", updateGolds)
 </script>
 
 <%- include("../partials/footer") %>

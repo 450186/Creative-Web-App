@@ -3,8 +3,15 @@
 
     <h3 style="text-align: center;"><%= city %></h3>
 
-    <!-- <p><%= latitude %></p><br>
-    <p><%= longitude %></p> -->
+    <form action="add-wishlist" method="POST">
+        <input type="hidden" name="city" value="<%= city || "" %>">
+        <input type="hidden" name="country" value="<%= country %>">
+        <input type="hidden" name="longitude" value="<%= longitude %>">
+        <input type="hidden" name="latitude" value="<%= latitude %>">
+        <input type="hidden" name="countryCode" value="<%= countryCode %>">
+        <input type="submit" name="wishlist" value="Add to wishlist">
+    </form>
+
     <h2 style="text-align: center; margin-bottom: 0px;">Visited here before?</h2>
     <div style="text-align: center; margin-top: 0px; margin-bottom: 10px;">
         <input type="radio" name="visited" value="Yes" id="yes-radio">
@@ -23,6 +30,8 @@
         <input type="hidden" name="city" value="<%= city || "" %>">
         <input type="hidden" name="country" value="<%= country %>">
         <input type="hidden" name="countryCode" value="<%= countryCode %>">
+        <input type="hidden" name="longitude" value="<%= longitude %>">
+        <input type="hidden" name="latitude" value="<%= latitude %>">
         <label for="visit-date">When did you visit?</label>
         <div id="date-select">
             <input type="date" id="visit-date-start" name="visitDateStart">

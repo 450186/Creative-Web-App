@@ -1,3 +1,20 @@
 <%- include("../partials/header") %>
 
+<% if (wishList.length === 0) { %>
+    <p id="errorMessage">Your Wishlist is Empty</p>
+    <p style="text-align: center;"">Visit <a href="home">Home</a> to add locations to your wishlist</p>
+<% } %>
+<% wishList.forEach(item => { %>
+    <div id="location-div">
+        <h2><%= item.country %></h2>
+        <h3><%= item.city %></h3>
+        <form method="GET" action="/location">
+            <input type="hidden" name="country" value="<%= item.country %>">
+            <input type="hidden" name="city" value="<%= item.city %>">
+            <input type="hidden" name="latitude" value="<%= item.latitude %>">
+            <input type="hidden" name="longitude" value="<%= item.longitude %>">
+            <button type="submit">View Location</button>
+        </form>
+    </div>
+<% }) %>
 <%- include("../partials/footer") %>

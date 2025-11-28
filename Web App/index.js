@@ -32,6 +32,7 @@ app.use(session({
 
 const connectionString = `mongodb+srv://${mongoDBusername}:${mongoDBpassword}@web-app-cluster.krmiigl.mongodb.net/${mongoAppName}?retryWrites=true&w=majority`;
 const mongoose = require("mongoose");
+const { title } = require("process")
 
 mongoose.connect(connectionString)
 .catch((err) => {
@@ -65,7 +66,7 @@ function format(d) {
 function ASCII(string) {
     return string.normalize("NFD")
     //normalize NFD takes the string and "decomposes" the string (non-Latin letters seperated)
-        .replace(/[^A-Za-z]/g, "")
+        .replace(/[^A-Za-z ]/g, "")
     //regex that replaces everything in the string with isnt A-Z or a-z with a blank - gets rid of accents etc
 }
 
@@ -87,16 +88,75 @@ app.get("/home", checkLogin, async (req, res) => {
         username: username,
         Loggedin: checkLoggedin(req),
         title: "Home",
-        locations: locationData
+        locations: locationData.PlacesVisited ?? [],
+        wishList: locationData.wishList ?? []
     })
 })
 
-app.get("/wishlist", checkLogin, (req, res) => {
+app.get("/wishlist", checkLogin, async (req, res) => {
+    username = req.session.username
+
+    const User = await userModel.userData.findOne({username: username}, {
+        _id: 0,
+        password: 0,
+        __v: 0
+    })
+
     res.render('pages/wishlist', {
         username: req.session.username,
         Loggedin: checkLoggedin(req),
-        title: "Wishlist"
+        title: "Wishlist",
+        wishList: User.wishList ?? []
     })
+})
+
+app.post("/add-wishlist", checkLogin, async (req, res) => {
+    try{
+        const {
+            city,
+            country,
+            longitude,
+            latitude,
+            countryCode,
+        } = req.body
+
+        const lat = Number(latitude)
+        const lng = Number(longitude)
+
+        const newWishlist = {
+            city,
+            country,
+            longitude: lng,
+            latitude: lat,
+            countryCode
+        }
+        const User = await userModel.userData.findOne({username: req.session.username})
+        if(!User) {
+            console.error("User not found!")
+            res.redirect("/login")
+        }
+        User.wishList.push(newWishlist)
+        await User.save()
+        res.render('pages/home', {
+            username: req.session.username,
+            city,
+            wishList: User.wishList,
+            locations: User.PlacesVisited,
+            successMessage: `Successfully added ${city} to your wishlist!`,
+            Loggedin: checkLoggedin(req), 
+            title: "Home",
+        })
+
+    } catch (e) {
+        console.error("Could not add to Wishlist!")
+        res.render('pages/home', {
+            city,
+            errorMessage: `Could not add ${city} to your wishlist!`,
+            username: req.session.username,
+            title: "Home",
+            Loggedin: checkLoggedin(req)
+        })
+    }
 })
 
 app.get("/history", checkLogin, async (req, res) => {
@@ -127,29 +187,51 @@ app.get("/location", checkLogin ,async (req, res) => {
 
     const {latitude, longitude} = req.query
 // https://nominatim.org/release-docs/develop/api/Reverse/
-    const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&zoom=10&addressdetails=1`
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&zoom=10&addressdetails=1&accept-language=en`
+    const username = req.session.username
 
+    const User = await userModel.userData.findOne({username: username})
+    if(!User) {
+        console.error("User not found!")
+        return res.redirect("/login")
+    }
     const response = await fetch(url, {
         headers: {"User-Agent" : "TravelrApp"} //nominatim requires this to identify app and stop nominatim from blocking my app
     })
     const data = await response.json()
-    const Country = ASCII(data.address?.country)
-    const City = ASCII(data.address?.city || data.address?.town || data.address?.village || data.address?.municipality)
-    const countryCode = data.address.country_code
+    // if(!data.address?.country  || !data.address?.city) {
+    //     console.error("Could not get location data from Nominatim")
+    //     return res.render("pages/home", {
+    //         errorMessage: "Could not get location data for the selected location. Please try again.",
+    //         username: req.session.username,
+    //         Loggedin: checkLoggedin(req),
+    //         title: "Home",
+    //         locations: User.PlacesVisited || [],
+    //         wishList: User.wishList || []
+    //     })    
+    // } else {
+        const City = ASCII(data.address?.city || data.address?.town || data.address?.village || data.address?.municipality)
+        const Country = ASCII(data.address?.country)
+        const countryCode = data.address.country_code
+        if (!User) {
+            console.error("User not found!");
+            return res.redirect("/login");
+        }
 
+        countryCode.toUpperCase()
 
-    countryCode.toUpperCase()
+        res.render('pages/location', {
+            username: req.session.username,
+            Loggedin: checkLoggedin(req),
+            title: Country,
+            latitude: latitude,
+            longitude: longitude,
+            city: City,
+            country: Country,
+            countryCode: countryCode,
+            wishList: User.wishList || []
+        })
 
-    res.render('pages/location', {
-        username: req.session.username,
-        Loggedin: checkLoggedin(req),
-        title: Country,
-        latitude: latitude,
-        longitude: longitude,
-        city: City,
-        country: Country,
-        countryCode: countryCode
-    })
 })
 
 app.post("/add-location", checkLogin, async (req, res) => {
@@ -160,15 +242,18 @@ app.post("/add-location", checkLogin, async (req, res) => {
         const {
             city,
             country,
-            countryCode,
             visitDateStart,
             visitDateEnd,
+            longitude,
+            latitude,
+            countryCode,
+            photos,
             notes,
             rating,
-            photos,
-            longitude,
-            latitude
         } = req.body
+    //convert the latitude and longitude from strings in the mongoDB to numbers
+    const lat = Number(latitude)
+    const lng = Number(longitude)
         
         const newLoc = {
             city,
@@ -177,8 +262,8 @@ app.post("/add-location", checkLogin, async (req, res) => {
                 startDate: visitDateStart,
                 endDate: visitDateEnd
             },
-            longitude,
-            latitude,
+            longitude: lng,
+            latitude: lat,
             countryCode,
             photos,
             notes,
@@ -201,10 +286,11 @@ app.post("/add-location", checkLogin, async (req, res) => {
             username: req.session.username,
             Loggedin: checkLoggedin(req),
             title: req.body.country,
-            latitude: "",
-            longitude: "",
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
             city: req.body.city,
             country: req.body.country,
+            countryCode: req.body.countryCode
         })
     }
 
