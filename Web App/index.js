@@ -63,12 +63,6 @@ function checkLoggedin(request) {
 function format(d) {
     return dayjs(d).format("dddd, DD MMM YYYY")
 }
-function ASCII(string) {
-    return string.normalize("NFD")
-    //normalize NFD takes the string and "decomposes" the string (non-Latin letters seperated)
-        .replace(/[^A-Za-z ]/g, "")
-    //regex that replaces everything in the string with isnt A-Z or a-z with a blank - gets rid of accents etc
-}
 
 app.get("/", checkLogin, (req, res) => {
     res.redirect("/login")
@@ -133,19 +127,12 @@ app.post("/add-wishlist", checkLogin, async (req, res) => {
         const User = await userModel.userData.findOne({username: req.session.username})
         if(!User) {
             console.error("User not found!")
-            res.redirect("/login")
+            return res.redirect("/login")
         }
         User.wishList.push(newWishlist)
         await User.save()
-        res.render('pages/home', {
-            username: req.session.username,
-            city,
-            wishList: User.wishList,
-            locations: User.PlacesVisited,
-            successMessage: `Successfully added ${city} to your wishlist!`,
-            Loggedin: checkLoggedin(req), 
-            title: "Home",
-        })
+        res.redirect('/home')
+        successMessage = `${city} added to your wishlist!`
 
     } catch (e) {
         console.error("Could not add to Wishlist!")
@@ -210,15 +197,13 @@ app.get("/location", checkLogin ,async (req, res) => {
     //         wishList: User.wishList || []
     //     })    
     // } else {
-        const City = ASCII(data.address?.city || data.address?.town || data.address?.village || data.address?.municipality)
-        const Country = ASCII(data.address?.country)
-        const countryCode = data.address.country_code
+        const City = data.address?.city || data.address?.town || data.address?.village || data.address?.municipality
+        const Country = data.address?.country
+        const countryCode = data.address.country_code.toUpperCase()
         if (!User) {
             console.error("User not found!");
             return res.redirect("/login");
         }
-
-        countryCode.toUpperCase()
 
         res.render('pages/location', {
             username: req.session.username,

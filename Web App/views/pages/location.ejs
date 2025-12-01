@@ -3,15 +3,21 @@
 
     <h3 style="text-align: center;"><%= city %></h3>
 
-    <form action="add-wishlist" method="POST">
+    <form action="<%= inWishlist ? '/remove-wishlist' : 'add-wishlist' %>" method="POST">
         <input type="hidden" name="city" value="<%= city || "" %>">
         <input type="hidden" name="country" value="<%= country %>">
         <input type="hidden" name="longitude" value="<%= longitude %>">
         <input type="hidden" name="latitude" value="<%= latitude %>">
         <input type="hidden" name="countryCode" value="<%= countryCode %>">
-        <input type="submit" name="wishlist" value="Add to wishlist">
+        <label for="wishlist-check">"<%= inWishlist ? "Remove from Wishlist" : "Add to Wishlist" %></label>
+        <input 
+        name="wishlist" 
+        onchange="this.form.submit()" 
+        type="checkbox" 
+        id="wishlist-check" 
+        <%= inWishlist ? "checked" : "" %>
+        >
     </form>
-
     <h2 style="text-align: center; margin-bottom: 0px;">Visited here before?</h2>
     <div style="text-align: center; margin-top: 0px; margin-bottom: 10px;">
         <input type="radio" name="visited" value="Yes" id="yes-radio">
