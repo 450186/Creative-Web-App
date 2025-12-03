@@ -33,6 +33,7 @@ app.use(session({
 const connectionString = `mongodb+srv://${mongoDBusername}:${mongoDBpassword}@web-app-cluster.krmiigl.mongodb.net/${mongoAppName}?retryWrites=true&w=majority`;
 const mongoose = require("mongoose");
 const { title } = require("process")
+const { error } = require("console")
 
 mongoose.connect(connectionString)
 .catch((err) => {
@@ -131,19 +132,59 @@ app.post("/add-wishlist", checkLogin, async (req, res) => {
         }
         User.wishList.push(newWishlist)
         await User.save()
+
+        req.session.successMessage = `${city} added to your wishlist!`
+
         res.redirect('/home')
-        successMessage = `${city} added to your wishlist!`
 
     } catch (e) {
         console.error("Could not add to Wishlist!")
         res.render('pages/home', {
             city,
-            errorMessage: `Could not add ${city} to your wishlist!`,
+            errorMessage: req.session.errorMessage = "Could not add to Wishlist!",
             username: req.session.username,
             title: "Home",
             Loggedin: checkLoggedin(req)
         })
     }
+})
+
+app.post("/remove-wishlist", checkLogin, async (req, res) => {
+    username = req.session.username
+    const {city, country} = req.body
+    const User = await userModel.userData.findOne({username: username})
+
+    await userModel.userData.updateOne(
+        {username: username},
+        {$pull: {wishList: {city: city, country: country}}}
+    )
+    const locationVisited = User.PlacesVisited.find(location => location.city === city && location.country === country)
+    const locationFound = !!locationVisited;
+
+    let visitedData = null;
+    if(locationFound) {
+        visitedData = {
+            ...locationVisited.toObject(),
+            formattedStart: format(locationVisited.dateVisited.startDate),
+            formattedEnd: format(locationVisited.dateVisited.endDate)
+        }
+    }
+
+    res.render('pages/location', {
+        username: req.session.username,
+        Loggedin: checkLoggedin(req),
+        title: country,
+        latitude: req.body.latitude,
+        longitude: req.body.longitude,
+        city: city || "",
+        country: country,
+        countryCode: req.body.countryCode,
+        inWishlist: false,
+        wishList: User.wishList || [],
+        locationFound,
+        visitedData
+    })
+
 })
 
 app.get("/history", checkLogin, async (req, res) => {
@@ -160,6 +201,7 @@ app.get("/history", checkLogin, async (req, res) => {
         formattedStart: format(loc.dateVisited.startDate),
         formattedEnd: format(loc.dateVisited.endDate)
     }))
+
 
     console.log(allLocations.PlacesVisited)
     res.render('pages/history', {
@@ -186,38 +228,43 @@ app.get("/location", checkLogin ,async (req, res) => {
         headers: {"User-Agent" : "TravelrApp"} //nominatim requires this to identify app and stop nominatim from blocking my app
     })
     const data = await response.json()
-    // if(!data.address?.country  || !data.address?.city) {
-    //     console.error("Could not get location data from Nominatim")
-    //     return res.render("pages/home", {
-    //         errorMessage: "Could not get location data for the selected location. Please try again.",
-    //         username: req.session.username,
-    //         Loggedin: checkLoggedin(req),
-    //         title: "Home",
-    //         locations: User.PlacesVisited || [],
-    //         wishList: User.wishList || []
-    //     })    
-    // } else {
-        const City = data.address?.city || data.address?.town || data.address?.village || data.address?.municipality
-        const Country = data.address?.country
-        const countryCode = data.address.country_code.toUpperCase()
-        if (!User) {
-            console.error("User not found!");
-            return res.redirect("/login");
-        }
 
+        const City = data.address?.city || data.address?.town || data.address?.village || data.address?.municipality || data.address?.county
+        const Country = data.address?.country
+
+        const countryCode = data.address?.country_code 
+        ? data.address.country_code.toUpperCase()
+        : null;
+
+        const inWishlist = User.wishList.some(location => location.city === City && location.country === Country);
+
+        const locationVisited = User.PlacesVisited.find(location => location.city === City && location.country === Country)
+        const locationFound = !!locationVisited;
+
+        let visitedData = null;
+        if(locationFound) {
+            visitedData = {
+                ...locationVisited.toObject(),
+                formattedStart: format(locationVisited.dateVisited.startDate),
+                formattedEnd: format(locationVisited.dateVisited.endDate)
+            }
+        }
         res.render('pages/location', {
             username: req.session.username,
             Loggedin: checkLoggedin(req),
             title: Country,
             latitude: latitude,
             longitude: longitude,
-            city: City,
+            city: City || "",
             country: Country,
             countryCode: countryCode,
-            wishList: User.wishList || []
-        })
-
-})
+            wishList: User.wishList || [],
+            inWishlist: inWishlist,
+            locationFound,
+            visitedData
+        })        
+    } 
+)
 
 app.post("/add-location", checkLogin, async (req, res) => {
 
@@ -262,20 +309,23 @@ app.post("/add-location", checkLogin, async (req, res) => {
         }
         User.PlacesVisited.push(newLoc)
         await User.save()
+        inWishlist = User.wishList.some(location => location.city === city && location.country === country);
 
         res.redirect('/history')
     } catch (e) {
             console.error("Error saving user:", e);
         res.render('pages/location', {
-            errorMessage: "Could not save Location",
+            errorMessage: req.session.errorMessage ="Could not save Location",
             username: req.session.username,
             Loggedin: checkLoggedin(req),
             title: req.body.country,
             latitude: req.body.latitude,
             longitude: req.body.longitude,
-            city: req.body.city,
+            city: req.body.city || "",
             country: req.body.country,
-            countryCode: req.body.countryCode
+            countryCode: req.body.countryCode,
+            inWishlist: inWishlist,
+            locationFound: locationFound
         })
     }
 
@@ -310,7 +360,7 @@ app.post("/login", async (req, res) => {
     } else {
         res.render('pages/login', {
             title: "Login",
-            errorMessage: "Username or Password Incorrect!"
+            errorMessage: req.session.errorMessage ="Username or Password Incorrect!"
         })
     }
 });
@@ -327,7 +377,7 @@ app.post("/register", async (req, res) => {
         res.redirect("/home")
     } else {
         res.render('pages/register', {
-            errorMessage: "Username is already in use!",
+            errorMessage: req.session.errorMessage ="Username is already in use!",
             title: "Home",
         })
     }

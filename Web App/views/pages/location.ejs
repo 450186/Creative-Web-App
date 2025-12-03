@@ -1,15 +1,14 @@
 <%- include("../partials/header") %>
-    <h2 id="location-name" style="text-align: center;"></h2>
-
-    <h3 style="text-align: center;"><%= city %></h3>
-
-    <form action="<%= inWishlist ? '/remove-wishlist' : 'add-wishlist' %>" method="POST">
+    
+    <h3 style="text-align: center;"> <%= city %> </h3>
+<% if (!locationFound) { %>
+     <form action="<%= inWishlist ? '/remove-wishlist' : 'add-wishlist' %>" method="POST">
         <input type="hidden" name="city" value="<%= city || "" %>">
         <input type="hidden" name="country" value="<%= country %>">
         <input type="hidden" name="longitude" value="<%= longitude %>">
         <input type="hidden" name="latitude" value="<%= latitude %>">
         <input type="hidden" name="countryCode" value="<%= countryCode %>">
-        <label for="wishlist-check">"<%= inWishlist ? "Remove from Wishlist" : "Add to Wishlist" %></label>
+        <label for="wishlist-check"><%= inWishlist ? "Remove from Wishlist" : "Add to Wishlist" %></label>
         <input 
         name="wishlist" 
         onchange="this.form.submit()" 
@@ -61,6 +60,23 @@
         </select><br>
         <input style="margin-top: 10px;" type="submit" value="Add to History">
     </form>
+<% } %>
+<% if (locationFound) { %>
+    <div id="location-div">
+        <h2><%= visitedData.country %></h2>
+        <h3><%= visitedData.city %></h3>
+        <hr style="width: 100%;">
+        <p style="margin-bottom: 0;"><%= visitedData.formattedStart %></p>
+        <p style="margin-bottom: 0; font-weight: bold;"> to </p>
+        <p style="margin-bottom: 0;"><%= visitedData.formattedEnd %></p>
+        <p style="font-weight: bold; margin-bottom: 0;">Thoughts:</p>
+        <p style="margin-bottom: 0;"><%= visitedData.notes %></p>
+        <p style="font-weight: bold; margin-bottom: 0;">Rating:</p>
+        <p><%= visitedData.rating %></p>
+    </div> 
+<% } %>
+
+
     <script defer>
         let yesRadio = document.getElementById("yes-radio")
         let noRadio = document.getElementById("no-radio")

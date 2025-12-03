@@ -1,12 +1,28 @@
 <%- include("../partials/header") %>
 
 <p style="text-align: center;">Welcome to TravLR, your ultimate travel companion!</p>
-<% if (typeof errorMessage !== 'undefined') { %>
-    <p id="errorMessage" style="text-align: center;"><%= errorMessage %></p>
+<% if (typeof errorMessage !== 'undefined' || typeof successMessage !== 'undefined') { %>
+    <div id="alerts">
+        <% if (typeof errorMessage !== 'undefined') { %>
+            <p id="errorMessage" style="text-align: center;"><%= errorMessage %></p>
+        <% } %>
+        <% if (typeof successMessage !== 'undefined') { %>
+            <p id="successMessage" style="text-align: center;"><%= successMessage %></p>
+        <% } %>
+    </div>
 <% } %>
-<% if (typeof successMessage !== 'undefined') { %>
-    <p id="successMessage" style="text-align: center;"><%= successMessage %></p>
-<% } %>
+<p id="errorMessage"></p>
+<script>
+    let alertDiv = document.getElementById("alerts")
+    if(alertDiv) {
+        setTimeout(() => {
+            alertDiv.classList.add("fade-out")
+        }, 3000)
+        setTimeout(() => {
+            alertDiv.style.display = "none"
+        }, 4000)
+    }
+</script>
 <div id="map-container">
     <div id="map"></div>
     <div id="location-data" data-wishlist="<%= JSON.stringify(wishList) %>" data-locations="<%= JSON.stringify(locations) %>"></div>
@@ -36,15 +52,55 @@
 </div>
 
 <script>
+
     var map = L.map('map').setView([20, 0], 2);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
     }).addTo(map);
 
+    // Load GeoJSON data for land detection
+    let WorldGeo = null;
+    fetch('/assets/Geojson.json')
+    .then(res => res.json())
+    .then(data => {
+        WorldGeo = L.geoJSON(data);
+        console.log("GeoJSON data loaded");
+    })
+    .catch(err => console.error("Error loading GeoJSON data:", err));
+
     map.on("click", function (click) {
+
+        if(!WorldGeo) {
+            errorMessage.innerText = "GeoJSON data not loaded yet. Please try again in a moment.";
+            setTimeout(() => {
+                errorMessage.classList.add("fade-out");
+            }, 3000);
+            setTimeout(() => {
+                errorMessage.innerText = "";
+            }, 4000);
+            return;
+        }
+
+
         const latitude = click.latlng.lat
         const longitude = click.latlng.lng
+
+        const point = [longitude, latitude]; // GeoJSON format
+
+        // Geo JSON information taken from https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json
+        const Geo = leafletPip.pointInLayer(point, WorldGeo);
+
+        if(Geo.length === 0) {
+            errorMessage.innerText = "Please select a location on land, not in the ocean.";
+            setTimeout(() => {
+                errorMessage.classList.add("fade-out");
+            }, 3000);
+            setTimeout(() => {
+                errorMessage.innerText = "";
+            }, 4000);
+            return;
+        }
 
         window.location.href = `/location?latitude=${latitude}&longitude=${longitude}`
     })
@@ -71,6 +127,7 @@
     let goldCheck = document.getElementById("gold-check")
     let greenLabel = document.getElementById("green-label")
     let goldLabel = document.getElementById("gold-label")
+    let errorMessage = document.getElementById("errorMessage")
 
     let greenPins = []
     let goldPins = []
@@ -85,7 +142,15 @@
         <br>
         ${location.rating}⭐️`)
         greenPins.push(green)
+
+        green.on('popupopen', function() {
+            const element = green.getPopup().getElement();
+            element.onclick= () => {
+                window.location.href = `/location?latitude=${location.latitude}&longitude=${location.longitude}`;
+            }
+        });
     });
+
     wishlistLocs.forEach(wishlistLoc => {
         if(!wishlistLoc.longitude || !wishlistLoc.latitude) return
         const gold = L.marker([wishlistLoc.latitude, wishlistLoc.longitude], {icon: GoldPin})
@@ -95,6 +160,12 @@
         <em>${wishlistLoc.country}</em>
         <br>`)
         goldPins.push(gold)
+        gold.on('popupopen', function() {
+            const element = gold.getPopup().getElement();
+            element.onclick = () => {
+                window.location.href = `/location?latitude=${wishlistLoc.latitude}&longitude=${wishlistLoc.longitude}`;
+            }
+        });
     })
     function updateGreens() {
         if(greenCheck.checked) {
