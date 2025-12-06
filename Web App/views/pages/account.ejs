@@ -1,3 +1,110 @@
 <%- include("../partials/header") %>
 
+    <div>
+        <h2 style="margin-top: 20px;">Account Details</h2>
+
+            <label id="user-field">Username: <%= username %> </label>
+            <input type="button" id="username-button" name="Edit" value="Edit"><br>
+            <label id="firstname-field">First name: <%= Firstname %> </label>
+            <input type="button" id="firstname-button" name="Edit" value="Edit"><br>
+            <label id="lastname-field">Last name: <%= Lastname %></label>
+            <input type="button" id="lastname-button" name="Edit" value="Edit"><br>
+            <!-- <% if(typeof errorMessage !== 'undefined') { %> 
+                <p id="errorMessage"> <%= errorMessage %> </p>
+            <% } %> -->
+
+        <script defer>
+            document.getElementById("username-button").addEventListener("click", usernameEdit)
+            document.getElementById("firstname-button").addEventListener("click", firstnameEdit)
+            document.getElementById("lastname-button").addEventListener("click", lastnameEdit)
+
+            function usernameEdit() {
+                let field = document.getElementById("user-field")
+                let input = document.createElement("input")
+                let userButt = document.getElementById("username-button")
+                input.type = "text"
+                input.value = field.textContent.replace("Username: ", "")
+                userButt.value = "Done"
+                userButt.type = "button"
+                field.replaceWith(input)
+                userButt.addEventListener("click", async (e) => {
+                    e.preventDefault()
+                    let response = await fetch('/edit-username', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type" : 'application/json'
+                        },
+                        body: JSON.stringify({
+                            newUsername: input.value.trim()
+                        })
+                    })
+
+                    const data = await response.json()
+                    if(data.success) {
+                        location.reload()
+                    } else {
+                        alert(data.error)
+                    }
+                })
+            }
+            function firstnameEdit() {
+                let field = document.getElementById("firstname-field")
+                let input = document.createElement("input")
+                let userButt = document.getElementById("firstname-button")
+                input.type = "text"
+                input.value = field.textContent.replace("Firstname: ", "")
+                userButt.value = "Done"
+                userButt.type = "button"
+                field.replaceWith(input)
+                userButt.addEventListener("click", async (e) => {
+                    e.preventDefault()
+                    let response = await fetch('/edit-firstname', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type" : 'application/json'
+                        },
+                        body: JSON.stringify({
+                            newFirstname: input.value.trim()
+                        })
+                    })
+
+                    const data = await response.json()
+                    if(data.success) {
+                        location.reload()
+                    } else {
+                        alert(data.error)
+                    }
+                })
+            }
+            function lastnameEdit() {
+                let field = document.getElementById("lastname-field")
+                let input = document.createElement("input")
+                let userButt = document.getElementById("lastname-button")
+                input.type = "text"
+                input.value = field.textContent.replace("Lastname: ", "")
+                userButt.value = "Done"
+                userButt.type = "button"
+                field.replaceWith(input)
+                userButt.addEventListener("click", async (e) => {
+                    e.preventDefault()
+                    let response = await fetch('/edit-lastname', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type" : 'application/json'
+                        },
+                        body: JSON.stringify({
+                            newLastname: input.value.trim()
+                        })
+                    })
+
+                    const data = await response.json()
+                    if(data.success) {
+                        location.reload()
+                    } else {
+                        alert(data.error)
+                    }
+                })
+        }
+        </script>
+    </div>
 <%- include("../partials/footer") %>
