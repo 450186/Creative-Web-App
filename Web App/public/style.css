@@ -184,6 +184,9 @@ textarea {
     color: white;
     padding: 10px;
 }
+#location-form {
+    margin-bottom: 20px;
+}
 /* History Page */
 #location-div {
     justify-content: center;
@@ -277,4 +280,60 @@ footer {
 }
 .leaflet-popup-close-button:hover {
     color: rgb(255, 3, 3) !important;
+}
+
+/* SlideShow styles */
+
+.slideshow-container {
+    margin-top: 40px;
+    position: relative;
+    margin: auto;
+    max-width: 40%;
+    border-radius: 20px;
+    background-color: #1d854a;
+    box-shadow: 5px 10px 15px 5px #145A32;
+}
+
+.fact-slides {
+    display: none;
+    padding: 20px;
+    text-align: center;
+    color: white;
+    padding: 20px;
+}
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -22px;
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+}
+.prev {
+    margin-right: 20px;
+    left: 0;
+}
+.next {
+    margin-left: 20px;
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.prev:hover, .next:hover {
+    color: #16CC21;
+}
+.fade {
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
 }

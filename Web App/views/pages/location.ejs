@@ -75,7 +75,61 @@
         <p><%= visitedData.rating %></p>
     </div> 
 <% } %>
+    <div id="things-to-do-div">
+        <h2 style="text-align: center; margin-bottom: 10px; margin-top: 20px;">Things to do around <%= city %>:</h2>
 
+        <div class="slideshow-container">
+            <p style="padding: 20px;" id="errorMessage">Loading...</p> 
+        </div>
+ 
+</div>
+<script>
+    const latitude = "<%= latitude %>";
+    const longitude = "<%= longitude %>";
+
+    fetch(`/api/things-to-do?latitude=${latitude}&longitude=${longitude}`)
+    .then(res => res.json())
+    .then(data => {
+        const container = document.getElementsByClassName("slideshow-container")[0];
+        const thingsToDo = data.thingsToDo;
+        if(!thingsToDo || thingsToDo.length === 0) {
+            container.innerHTML = "<p id='errorMessage'>No things to do in this area.</p>";
+            return;
+        }
+        container.innerHTML = `<a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>`;
+
+        thingsToDo.forEach(item => {
+            const slideDiv = document.createElement("div");
+            slideDiv.classList.add("fact-slides");
+            const title = document.createElement("h3");
+            title.textContent = item.name;
+            slideDiv.appendChild(title);
+            if(item.address) {
+                const address = document.createElement("p");
+                address.textContent = item.address;
+                slideDiv.appendChild(address);
+            }
+            if(item.distance) {
+                const distance = document.createElement("p");
+                distance.textContent = `Distance: ${item.distance.toFixed(2)} km`;
+                slideDiv.appendChild(distance);
+            }
+            if(item.category && item.category.length > 0) {
+                const categoryArray = item.category.split("\n");
+                const categories = document.createElement("p");
+                categories.textContent = `Categories: ${categoryArray.join(", \n")}`;
+                slideDiv.appendChild(categories);
+            }
+            container.appendChild(slideDiv);
+            console.log(`Name: ${item.name}`)
+            console.log(`categories: ${item.category}`);
+            console.log(item)
+        })
+        slideIndex = 1;
+        showSlides(slideIndex);
+    })
+</script>
 
     <script defer>
         let yesRadio = document.getElementById("yes-radio")
@@ -92,5 +146,29 @@
             }
         })
         
+        let slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName('fact-slides');
+
+            if(slides.length === 0) {
+                return;
+            }
+
+            if(n > slides.length) {slideIndex = 1}
+            if(n < 1) {slideIndex = slides.length}
+
+            for(i=0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slides[slideIndex - 1].style.display = "block"
+        }
+
+
     </script>
 <%- include("../partials/footer") %>
