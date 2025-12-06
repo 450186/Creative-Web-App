@@ -1,0 +1,18 @@
+the purpose of my app is for avid travellers to store all of their adventures in one place. the intention is for users to be able to give their opinions of different places, upload their photos from their holidays and have a wishlist of where they would like to go next
+
+the technology stack I have gone with is using express, Node, EJS templating and having a mongoDB database to store all of the information I need for it to work. 
+
+I have thought long and hard about the UX design of my website. I am giving users the option on how they want to view specific information such as the order that the history page is viewed, whether that be by rating or by dates. I have gone with a green theme because I believe that correlates most with travel in my mind.
+I have used a hamburger menu which people will see and just know that it is a menu button due to convention.
+
+a major feature I want to implement is giving the user recommendations based on certain criteria such as if the user is looking for a city break or a ski holiday, beach holiday etc. 
+
+one of the biggest obstacles I will face is learning how to add filters to locations. I have ideas on how I could do it such as giving each location a tag saying "city break" but its a struggle to figure out how to automate it without going into each location and adding a tag.
+
+I have dealt a lot with leaflet.js which is a relatively new concept. I have been looking into using GeoJSON and reverse GeoCoding.
+GeoJSON is used to stop users from clicking on the ocean and only clicking landmarks. 
+GeoCoding takes the latitude and longitude and converts it into location information. to do this I am using an API called Nominatim.
+
+I have had to learn a lot about how to pass data through to pages and what information is relevant to each page and what page needs what information. 
+the syntax of EJS has also been a struggle due to it being previously unknown until halfway through this module. 
+I have found a VS Code extension to help me with this.
