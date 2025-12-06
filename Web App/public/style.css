@@ -124,7 +124,7 @@ input[type="password"] {
     border-radius: 5px;
 }
 
-input[type="submit"], select {
+input[type="submit"], select, input[type="button"] {
     background-color: #1CFF29;
     color: #145A32;
     padding: 8px 16px;
@@ -134,7 +134,7 @@ input[type="submit"], select {
     margin-top: 10px;
 }
 
-input[type="submit"]:hover, select:hover {
+input[type="submit"]:hover, select:hover, input[type="button"]:hover {
     background-color: #16CC21;
     font-weight: bold;
 }
@@ -187,6 +187,34 @@ textarea {
 #location-form {
     margin-bottom: 20px;
 }
+#account-div {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background-color: #1d854a;
+    border-radius: 50px;
+    box-shadow: 5px 10px 15px 5px #145A32;
+    color: white;
+    padding: 10px;
+    width: 40%;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.account-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    padding: 10px 0;
+    position: relative;
+}
+.account-row label {
+    font-size: 1.1em;
+    flex: 1;
+}
+
 /* History Page */
 #location-div {
     justify-content: center;

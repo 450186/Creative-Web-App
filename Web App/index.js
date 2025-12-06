@@ -384,12 +384,22 @@ app.get("/settings", (req, res) => {
     })
 })
 
-app.get("/account", checkLogin, (req, res) => {
+app.get("/account", checkLogin, async (req, res) => {
+
+    const User = await userModel.userData.findOne({username: req.session.username})
+
+    passwordlength = User.password.length
+
     res.render('pages/account', {
         username: req.session.username,
         Loggedin: checkLoggedin(req),
-        title: "Account",
+        title: "Profile",
+        firstName: User.firstName,
+        lastName: User.lastName,
+        password: User.password,
+        passwordMask: "*".repeat(passwordlength),
     })
+
 })
 app.get("/login", (req, res) => {
     res.render('pages/login', {
@@ -399,15 +409,26 @@ app.get("/login", (req, res) => {
     })
 })
 app.post("/login", async (req, res) => {
-    if(await userModel.checkUser(req.body.username, req.body.password)) {
-        req.session.username = req.body.username;
-        res.redirect("/home")
-    } else {
-        res.render('pages/login', {
+
+    const userExists = await userModel.checkUsername(req.body.username)
+
+    if(!userExists) {
+        return res.render('pages/login', {
             title: "Login",
-            errorMessage: req.session.errorMessage ="Username or Password Incorrect!"
+            errorMessage: req.session.errorMessage = "This user does not exist!",
         })
     }
+    const validUser = await userModel.checkUser(req.body.username, req.body.password)
+
+    if(!validUser) {
+        return res.render('pages/login', {
+            title: "Login",
+            errorMessage: req.session.errorMessage = "Incorrect password, please try again!",
+        })
+    }
+
+    req.session.username = req.body.username
+    res.redirect("/home")
 });
 
 app.get("/register", (req, res) => {
@@ -417,16 +438,75 @@ app.get("/register", (req, res) => {
 })
 
 app.post("/register", async (req, res) => {
-    if(await userModel.addUser(req.body.username, req.body.password)) {
+    if(await userModel.addUser(req.body.username, req.body.password, req.body.firstName, req.body.lastName)) {
         req.session.username = req.body.username
         res.redirect("/home")
     } else {
-        res.render('pages/register', {
+        res.render('pages/login', {
             errorMessage: req.session.errorMessage ="Username is already in use!",
-            title: "Home",
+            title: "Login",
         })
     }
 });
+app.post('/edit-username', checkLogin ,async (request, response) => {
+    let oldUsername = request.session.username
+    const {newUsername} = request.body
+
+    if(await userModel.checkUsername(newUsername)) {
+        return response.json({ success: false, error: "Username already exists" });
+    }
+    await userModel.userData.findOneAndUpdate(
+        {username: oldUsername},
+        {username: newUsername},
+        {new: true}
+    );
+
+    request.session.username = newUsername;
+
+    return response.json({ success: true });
+})
+
+app.post('/edit-password', async (request, response) => {
+    let CurrentUsername = request.session.username
+    const {newPassword} = request.body
+
+    await userModel.userData.findOneAndUpdate(
+        {username: CurrentUsername},
+        {password: newPassword},
+        {new: true}
+    );
+
+    return response.json({ success: true });
+})
+
+app.post('/edit-firstname', async (request, response) => {
+    let CurrentUsername = request.session.username
+    const {newFirstname} = request.body
+
+    
+    await userModel.userData.findOneAndUpdate(
+        {username: CurrentUsername},
+        {firstName: newFirstname},
+        {new: true}
+    );
+
+    return response.json({ success: true });
+
+})
+app.post('/edit-lastname', async (request, response) => {
+    let CurrentUsername = request.session.username
+    const {newLastname} = request.body
+
+    
+    await userModel.userData.findOneAndUpdate(
+        {username: CurrentUsername},
+        {lastName: newLastname},
+        {new: true}
+    );
+
+    return response.json({ success: true });
+
+})
 
 app.get("/logout", checkLogin, (req, res) => {
     req.session.destroy();

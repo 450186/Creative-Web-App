@@ -27,13 +27,15 @@ const WishListSchema = new Schema({
 const userSchema = new Schema({
     username: String,
     password: String,
+    firstName: String,
+    lastName: String,
     PlacesVisited: [PlacesVisitedSchema],
     wishList: [WishListSchema]
 })
 
 const userData = model("user", userSchema);
 
-async function addUser(username, password) {
+async function addUser(username, password, firstName, lastName) {
     let userExists = null;
 
     userExists = await userData.findOne({username: username}).exec();
@@ -45,6 +47,8 @@ async function addUser(username, password) {
         let newUser = new userData({
             username: username,
             password: password,
+            firstName: firstName,
+            lastName: lastName,
         });    
             await userData.create(newUser)
             .catch((err) => {console.log("Error adding user: " + err);});
@@ -63,8 +67,21 @@ async function checkUser(username, password) {
         return false;
     }
 }
+
+async function checkUsername(username) {
+    let userExists = null;
+
+    userExists = await userData.findOne({username: username}).exec();
+
+    if(userExists) {
+        return true;
+    } else {
+        return false;
+    }
+}
 module.exports = {
     addUser,
     checkUser,
+    checkUsername,
     userData
 }

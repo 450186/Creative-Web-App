@@ -1,23 +1,30 @@
 <%- include("../partials/header") %>
 
-    <div>
+    <div id="account-div">
         <h2 style="margin-top: 20px;">Account Details</h2>
-
+        <div class="account-row">
             <label id="user-field">Username: <%= username %> </label>
             <input type="button" id="username-button" name="Edit" value="Edit"><br>
-            <label id="firstname-field">First name: <%= Firstname %> </label>
+        </div>
+        <div class="account-row">
+            <label id="password-field">Password: <%= passwordMask %> </label>
+            <input type="button" id="password-button" name="Edit" value="Edit"><br>
+        </div>
+        <div class="account-row">
+            <label id="firstname-field">First name: <%= firstName %> </label>
             <input type="button" id="firstname-button" name="Edit" value="Edit"><br>
-            <label id="lastname-field">Last name: <%= Lastname %></label>
+        </div>
+        <div class="account-row">
+            <label id="lastname-field">Last name: <%= lastName %></label>
             <input type="button" id="lastname-button" name="Edit" value="Edit"><br>
-            <!-- <% if(typeof errorMessage !== 'undefined') { %> 
-                <p id="errorMessage"> <%= errorMessage %> </p>
-            <% } %> -->
+        </div>    
+    </div>
 
         <script defer>
             document.getElementById("username-button").addEventListener("click", usernameEdit)
             document.getElementById("firstname-button").addEventListener("click", firstnameEdit)
             document.getElementById("lastname-button").addEventListener("click", lastnameEdit)
-
+            document.getElementById("password-button").addEventListener("click", passwordEdit)
             function usernameEdit() {
                 let field = document.getElementById("user-field")
                 let input = document.createElement("input")
@@ -36,6 +43,35 @@
                         },
                         body: JSON.stringify({
                             newUsername: input.value.trim()
+                        })
+                    })
+
+                    const data = await response.json()
+                    if(data.success) {
+                        location.reload()
+                    } else {
+                        alert(data.error)
+                    }
+                })
+            }
+                function passwordEdit() {
+                let field = document.getElementById("password-field")
+                let input = document.createElement("input")
+                let passButt = document.getElementById("password-button")
+                input.type = "text"
+                input.value = field.textContent.replace("Password: ", "")
+                passButt.value = "Done"
+                passButt.type = "button"
+                field.replaceWith(input)
+                passButt.addEventListener("click", async (e) => {
+                    e.preventDefault()
+                    let response = await fetch('/edit-password', {
+                        method: "POST",
+                        headers: {
+                            "Content-Type" : 'application/json'
+                        },
+                        body: JSON.stringify({
+                            newPassword: input.value.trim()
                         })
                     })
 
@@ -106,5 +142,4 @@
                 })
         }
         </script>
-    </div>
 <%- include("../partials/footer") %>
