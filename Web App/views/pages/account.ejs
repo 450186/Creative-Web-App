@@ -7,7 +7,8 @@
             <input type="button" id="username-button" name="Edit" value="Edit"><br>
         </div>
         <div class="account-row">
-            <label id="password-field">Password: <%= passwordMask %> </label>
+            <label data-real-password="<%= password %>" id="password-field">Password: <%= passwordMask %> </label>
+            <i id="show-button" class="fa-solid fa-eye"></i>
             <input type="button" id="password-button" name="Edit" value="Edit"><br>
         </div>
         <div class="account-row">
@@ -25,6 +26,24 @@
             document.getElementById("firstname-button").addEventListener("click", firstnameEdit)
             document.getElementById("lastname-button").addEventListener("click", lastnameEdit)
             document.getElementById("password-button").addEventListener("click", passwordEdit)
+            let passwordField = document.getElementById("password-field")
+            let eye = document.getElementById("show-button")
+            eye.addEventListener("click", togglePasswordVisibility)
+
+            function togglePasswordVisibility() {
+                if(eye.classList.contains("fa-eye")) {
+                    eye.style.color = "red"
+                    eye.classList.remove("fa-eye")
+                    eye.classList.add("fa-eye-slash")
+                    passwordField.textContent = "Password: <%= password %>"
+                } else {
+                    eye.style.color = "#16CC21"
+                    eye.classList.remove("fa-eye-slash")
+                    eye.classList.add("fa-eye")
+                    passwordField.textContent = "Password: <%= passwordMask %>"
+                }
+            }
+
             function usernameEdit() {
                 let field = document.getElementById("user-field")
                 let input = document.createElement("input")
@@ -58,8 +77,11 @@
                 let field = document.getElementById("password-field")
                 let input = document.createElement("input")
                 let passButt = document.getElementById("password-button")
+                let realPassword = field.dataset.realPassword
+                eye.style.display = "none"
                 input.type = "text"
-                input.value = field.textContent.replace("Password: ", "")
+                input.value = realPassword
+                
                 passButt.value = "Done"
                 passButt.type = "button"
                 field.replaceWith(input)
@@ -71,6 +93,7 @@
                             "Content-Type" : 'application/json'
                         },
                         body: JSON.stringify({
+
                             newPassword: input.value.trim()
                         })
                     })

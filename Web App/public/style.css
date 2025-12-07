@@ -310,6 +310,16 @@ footer {
     color: rgb(255, 3, 3) !important;
 }
 
+#show-button {
+    margin-right: 20px; 
+    cursor: pointer;
+    color: #16CC21;
+}
+#show-button:hover {
+    font-weight: bold;
+}
+
+
 /* SlideShow styles */
 
 .slideshow-container {
@@ -328,6 +338,8 @@ footer {
     text-align: center;
     color: white;
     padding: 20px;
+    width: 75%;
+    margin: auto;
 }
 .prev, .next {
     cursor: pointer;
