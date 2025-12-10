@@ -1,21 +1,16 @@
 <%- include("../partials/header") %>
     
     <h3 style="text-align: center;"> <%= city %> </h3>
+
 <% if (!locationFound) { %>
-     <form action="<%= inWishlist ? '/remove-wishlist' : 'add-wishlist' %>" method="POST">
+     <form id="wishlist-form" action="<%= inWishlist ? '/remove-wishlist' : 'add-wishlist' %>" method="POST">
         <input type="hidden" name="city" value="<%= city || "" %>">
         <input type="hidden" name="country" value="<%= country %>">
         <input type="hidden" name="longitude" value="<%= longitude %>">
         <input type="hidden" name="latitude" value="<%= latitude %>">
         <input type="hidden" name="countryCode" value="<%= countryCode %>">
+        <span><i id="star" class="<%= inWishlist ? "fa-solid yellow" : "fa-regular" %> fa-star"></i></span>
         <label for="wishlist-check"><%= inWishlist ? "Remove from Wishlist" : "Add to Wishlist" %></label>
-        <input 
-        name="wishlist" 
-        onchange="this.form.submit()" 
-        type="checkbox" 
-        id="wishlist-check" 
-        <%= inWishlist ? "checked" : "" %>
-        >
     </form>
     <h2 style="text-align: center; margin-bottom: 0px;">Visited here before?</h2>
     <div style="text-align: center; margin-top: 0px; margin-bottom: 10px;">
@@ -27,6 +22,8 @@
     <% if (typeof errorMessage !== 'undefined') { %>
         <p id="errorMessage"><%= errorMessage %></p>
     <% } %>
+
+    <div id="modal-overlay"></div>
     <form id="location-form" 
     method="POST" 
     style="padding-top: 10px; display: none;" 
@@ -38,6 +35,7 @@
         <input type="hidden" name="longitude" value="<%= longitude %>">
         <input type="hidden" name="latitude" value="<%= latitude %>">
         <label for="visit-date">When did you visit?</label>
+        <span><a href="javascript:void(0)" class="closebtn" onclick="closeDiv()">&times;</a></span>
         <div id="date-select">
             <input type="date" id="visit-date-start" name="visitDateStart">
             <label for="to-date">To:</label>
@@ -58,47 +56,70 @@
             <option value="4">4⭐️</option>
             <option value="5">5⭐️</option>
         </select><br>
+
         <input style="margin-top: 10px;" type="submit" value="Add to History">
     </form>
 <% } %>
 <% if (locationFound) { %>
-    <div id="location-div">
-        <h2><%= visitedData.country %></h2>
-        <h3><%= visitedData.city %></h3>
-        <hr style="width: 100%;">
-        <p style="margin-bottom: 0;"><%= visitedData.formattedStart %></p>
-        <p style="margin-bottom: 0; font-weight: bold;"> to </p>
-        <p style="margin-bottom: 0;"><%= visitedData.formattedEnd %></p>
-        <p style="font-weight: bold; margin-bottom: 0;">Thoughts:</p>
-        <p style="margin-bottom: 0;"><%= visitedData.notes %></p>
-        <p style="font-weight: bold; margin-bottom: 0;">Rating:</p>
-        <p><%= visitedData.rating %></p>
-    </div> 
+
+    <form id="foundLoc-form" action="/delete-location" method="POST">
+        <input type="hidden" name="city" value="<%= visitedData.city %>">
+        <input type="hidden" name="country" value="<%= visitedData.country %>">
+        <div class="location-div">
+            <p class="label">Start Date</p>
+            <p class="value"><%= visitedData.formattedStart %></p>
+
+            <p class="label">End Date</p>
+            <p class="value"><%= visitedData.formattedEnd %></p>
+
+            <p class="label">Opinions:</p>
+            <p class="value"><%= visitedData.notes %></p>
+            
+            <p class="label">Rating:</p>
+            <p class="value"><%= visitedData.rating %>⭐️</p>
+            <input class="span2" type="submit" name="delete-loc" id="delete-loc" value="Delete Location">
+        </div> 
+    </form>   
+
 <% } %>
     <div id="things-to-do-div">
         <h2 style="text-align: center; margin-bottom: 10px; margin-top: 20px;">Things to do around <%= city %>:</h2>
 
+    <!-- https://www.w3schools.com/howto/howto_js_slideshow.asp -->
         <div class="slideshow-container">
-            <p style="padding: 20px;" id="errorMessage">Loading...</p> 
+            <div id="loading"></div>
         </div>
         
  
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+
 <script>
-    const latitude = "<%= latitude %>";
-    const longitude = "<%= longitude %>";
+    const latitude = Number("<%= latitude %>");
+    const longitude = Number("<%= longitude %>");
+
+    const loader = document.getElementById("loading")
+    const spinner = new Spinner({
+        lines: 12, length: 7, width: 5, radius: 10, color: "#2A6F75"
+    }).spin(loader)
 
     fetch(`/api/things-to-do?latitude=${latitude}&longitude=${longitude}`)
     .then(res => res.json())
     .then(data => {
+        spinner.stop()
+        loader.remove()
         const container = document.getElementsByClassName("slideshow-container")[0];
         const thingsToDo = data.thingsToDo;
         if(!thingsToDo || thingsToDo.length === 0) {
-            container.innerHTML = "<p id='errorMessage'>No things to do in this area.</p>";
+            container.innerHTML = "<p id='errorMessage' style='padding: 20px' >No things to do in this area.</p>";
             return;
         }
-        container.innerHTML = `<a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-            <a class="next" onclick="plusSlides(1)">&#10095;</a>`;
+        //https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML
+
+        container.insertAdjacentHTML("beforeend", `
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        `);
 
         thingsToDo.forEach(item => {
             const slideDiv = document.createElement("div");
@@ -119,7 +140,7 @@
             if(item.category && item.category.length > 0) {
                 const categoryArray = item.category.split("\n");
                 const categories = document.createElement("p");
-                categories.textContent = `Categories: ${categoryArray.join(", \n")}`;
+                categories.innerHTML = ` <strong>Categories:</strong> ${categoryArray.join(", \n")}`;
                 slideDiv.appendChild(categories);
             }
             container.appendChild(slideDiv);
@@ -130,22 +151,48 @@
         slideIndex = 1;
         showSlides(slideIndex);
     })
+    .catch(err => {
+        spinner.stop()
+        loader.innerHTML = `<p class="errorMessage">Error Loading Data</p>`
+    })
 </script>
 
     <script defer>
         let yesRadio = document.getElementById("yes-radio")
         let noRadio = document.getElementById("no-radio")
         let locationForm = document.getElementById("location-form")
-        yesRadio.addEventListener("change", () => {
-            if(yesRadio.checked) {
-                locationForm.style.display = "block"
-            } 
-        })
-        noRadio.addEventListener("change", () => {
-            if(noRadio.checked) {
-                locationForm.style.display = "none"
-            }
-        })
+        let overlay = document.getElementById("modal-overlay")
+        const wishlistForm = document.getElementById("wishlist-form")
+        const star = document.getElementById("star")
+
+        if(star && wishlistForm) {
+            star.addEventListener("click", () => {
+                wishlistForm.submit()
+            })
+        }
+        
+if (yesRadio && noRadio && locationForm && overlay) {
+    function closeDiv() {
+        locationForm.style.display = "none" 
+        overlay.style.display = "none"
+        noRadio.checked = true;
+    }
+    function openDiv() {
+        locationForm.style.display = "block"
+        overlay.style.display = "block"
+    }
+
+    yesRadio.addEventListener("change", () => {
+        if(yesRadio.checked) {
+            openDiv()
+        } 
+    })
+    noRadio.addEventListener("change", () => {
+        if(noRadio.checked) {
+            closeDiv()
+        }
+    })
+}
         
         let slideIndex = 1;
         showSlides(slideIndex);

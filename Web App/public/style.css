@@ -1,11 +1,33 @@
+:root {
+    /* ===== Brand Colors ===== */
+    --primary: #2A6F75;
+    --primary-dark: #24595E;
+
+    /* ===== Backgrounds ===== */
+    --bg: #F3E9D2; 
+    --bg-card: #E6D7B9;
+
+
+    /* ===== Text ===== */
+    --text: #2D3436;
+    --text-secondary: #363e41;
+
+    /* ===== Accents ===== */
+    --accent-warm: #DDAA66;
+    --accent-warm-dark: #C18E4C;
+
+    /* ===== UI ===== */
+    --shadow: 2px 10px 15px 5px rgb(111, 108, 108);
+}
+
 html,
 body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
-    background-color: #BCFBC0;
-    color: #145A32;
+    background-color: var(--bg);
+    color: var(--text);
     font-size: large;
     font-weight: 550;
     overflow-x: hidden;
@@ -17,31 +39,34 @@ body {
 }
 
 .Heading {
-    margin: 10px;
     display: flex;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    position: relative;
-    width: 100%;
+    width: 60%;
+    margin: auto;
 }
-
-.title {
-    flex: 2;
-    font-size: 48px;
-    font-weight: bold;
-    text-align: center;
-}
-
-/* Navigation styles */
 .Hamburger {
-    flex: 1;
     font-size: 48px;
+    margin-top: 0;
     cursor: pointer;
-    position: absolute;
-    right: 40px;
+    line-height: 1;
+    margin-top: 10px;
 }
+.title {
+    font-size: 48px;
+    margin-top: 0;
+    line-height: 1;
+    margin-top: 10px;
+}
+.Heading.centered-title {
+    justify-content: center;
+    margin-top: 10px
+}
+
 .Hamburger:hover {
     font-weight: bold;
+    color: var(--text-dark);
 }
 .sidenav {
     height: 100%;
@@ -50,17 +75,19 @@ body {
     z-index: 1500;
     top: 0;
     right: 0;
-    background-color: #9BCF9E;
+    background-color: var(--bg-card);
     overflow-x: hidden;
     transition: 0.5s;
 }
 
 a:visited {
-    color: #145A32;
+    color: var(--text-secondary);
 }
 
 a:hover {
     font-weight: bold;
+    color: var(--text-secondary);
+    cursor: pointer;
 }
 
 .sidenav a {
@@ -68,9 +95,13 @@ a:hover {
     padding-left: 20px;
     text-decoration: none;
     font-size: 25px;
-    color: #145A32;
+    color: var(--text);
     display: block;
     transition: 0.3s;
+    cursor: pointer;
+}
+.sidenav-header .closebtn {
+    cursor: pointer;
 }
 
 .sidenav a:nth-child(2) {
@@ -79,6 +110,7 @@ a:hover {
 
 .sidenav a:hover {
     font-weight: bold;
+    color: var(--text-secondary);
 }
 
 .sidenav .closebtn {
@@ -120,33 +152,47 @@ input[type="password"] {
     width: 30%;
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #145A32;
+    border: 1px solid var(--accent-cool);
     border-radius: 5px;
 }
 
-input[type="submit"], select, input[type="button"] {
-    background-color: #1CFF29;
-    color: #145A32;
+#rating {
+    appearance: none;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--primary); 
+    color: var(--text);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+input[type="submit"], input[type="button"] {
+    background-color: var(--accent-warm);
+    color: var(--text-secondary);
     padding: 8px 16px;
-    border: 1px solid #145A32;
+    border: 1px solid var(--primary);
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
 }
 
 input[type="submit"]:hover, select:hover, input[type="button"]:hover {
-    background-color: #16CC21;
+    background-color: var(--accent-warm-dark);
     font-weight: bold;
 }
+
 input[type="file"] {
     width: 180px;
     margin: 10px;
     margin-left: 0px
 }
+
 textarea {
     width: 60%;
     border-radius: 5px;
-    border: 1px solid #145A32;
+    border: 1px solid var(--primary);
     margin: 10px
 }
 
@@ -157,6 +203,11 @@ textarea {
 
 .fade-out {
     animation-name: fadeOut;
+    animation-duration: 3s;
+}
+
+.fade-in {
+    animation-name: fade;
     animation-duration: 3s;
 }
 
@@ -173,28 +224,92 @@ textarea {
     font-weight: bold;
     text-align: center;
 }
-/* Forms */
-#location-form, #location-div {
+
+/* History Page */
+#history-container, #foundLoc-form {
     display: flex;
-    flex-direction: column;
-    padding: 10px;
-    background-color:  #1d854a;
-    border-radius: 50px;
-    box-shadow: 5px 10px 15px 5px #145A32;
-    color: white;
-    padding: 10px;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 60%;
+    margin: auto;
 }
+ .location-div {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: min-content;
+    gap: 10px;
+    padding: 20px;
+    background-color: var(--bg-card);
+    border-radius: 50px;
+    box-shadow: var(--shadow);
+ }
+ .clickable:hover {
+    background-color: var(--accent-warm-dark);
+    cursor: pointer;
+ }
+ .span2 {
+    grid-column: 1 / span 2;
+    text-align: center;
+ }
+ .location-div .label {
+    font-weight: bold;
+ }
+ .location-div .value {
+    text-align: center;
+ }
+#delete-loc {
+    max-width: 50%;
+    margin: auto;
+}
+
+
 #location-form {
     margin-bottom: 20px;
+    display: flex;
+    flex-flow: column;
+    width: 40%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow);
+    color: var(--text);
+    text-align: center;
+    border-radius: 50px;
+    z-index: 50;
+    padding: 20px;
+    position: fixed;
 }
+#location-form .closebtn {
+    position: absolute;
+    right: 40px;
+    text-decoration: none;
+    font-size: larger;
+    color: var(--text);
+}
+#location-form .closebtn:hover {
+    color: var(--text-secondary);
+}
+#modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 49;
+    display: none;
+}
+
 #account-div {
     display: flex;
     flex-direction: column;
     padding: 10px;
-    background-color: #1d854a;
+    background-color: var(--bg-card);
     border-radius: 50px;
-    box-shadow: 5px 10px 15px 5px #145A32;
-    color: white;
+    box-shadow: var(--shadow);
+    color: var(--text);
     padding: 10px;
     width: 40%;
     margin: auto;
@@ -202,6 +317,7 @@ textarea {
     align-items: center;
     gap: 10px;
 }
+
 .account-row {
     display: flex;
     justify-content: space-between;
@@ -210,6 +326,7 @@ textarea {
     padding: 10px 0;
     position: relative;
 }
+
 .account-row label {
     font-size: 1.1em;
     flex: 1;
@@ -234,18 +351,21 @@ textarea {
 #location-div p:nth-child(2) {
     font-weight: bold;
 }
+
 #notes-div {
     display: inline-block;
 }
 #notes-div label {
     vertical-align: text-top;
 }
+
 /* Map Styling */
 #map-container {
     display: flex;
     flex-flow: row;
     margin: auto;
     text-align: center;
+    width: 80%;
 }
 #map {
     height: 500px;
@@ -253,57 +373,98 @@ textarea {
     margin-right: 10px;
     border-radius: 50px;
     margin-left: auto;
+    cursor: crosshair !important;
 }
+/* Map Key styling */
+
 #key-div {
     display: flex;
     flex-flow: column;
     margin-right: auto;
+    margin-left: 20px;
 }
+
 .key {
     display: flex;
-    flex-flow: row;
-    text-align: center;
+    flex-direction: row;
+    align-items: center;
 }
-.pins {
-    width: 50px;
-}
-.key-text {
-    text-align: center;
-}
+
 #green-div, #gold-div {
-    background-color: #1d854a;
-    color: white;
-    box-shadow: 5px 10px 15px 5px #145A32;
-    border-radius: 50px;
+    cursor: pointer;
+}
+#green-div:hover, #gold-div:hover {
+    background-color: var(--accent-warm);
+    transition: background 0.2s;
+}
+#green-div, 
+#gold-div {
+    background-color: var(--bg-card);
+    color: var(--text);
+    box-shadow: var(--shadow);
+    border-radius: 25px;
     margin-bottom: 20px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    width: 80%;
+    padding: 10px;
+    width: 100%;
     margin-left: auto;
 }
 
+
+.key-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    margin-right: 20px;
+}
+
+.key-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 1;
+    width: auto;
+}
+.key-right label {
+    word-break: break-word;
+    text-align: center;
+}
+
+.pins {
+    width: 25px;
+    margin: 10px;
+}
+
+.checkboxes {
+    margin-top: 5px;
+}
+
+
 footer {
-    text-align: right;
+    text-align: center;
     font-weight: bold;
     margin-right: 20px;
     padding: 1rem;
     padding-bottom: 0px;
 }
+
 /* Leaflet popup */
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
-    background-color: #1d854a;
-    box-shadow: 5px 10px 15px 5px #145A32;
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow);
     cursor: pointer;
 }
 .leaflet-popup-content {
     text-align: center;
-    color: white;
+    color: var(--text);
 }
 .leaflet-popup-close-button {
-    color: white !important;
+    color: var(--text) !important;
     opacity: 1;
 }
 .leaflet-popup-close-button:hover {
@@ -319,24 +480,28 @@ footer {
     font-weight: bold;
 }
 
-
 /* SlideShow styles */
-
 .slideshow-container {
     margin-top: 40px;
     position: relative;
     margin: auto;
-    max-width: 40%;
+    max-width: 60%;
     border-radius: 20px;
-    background-color: #1d854a;
-    box-shadow: 5px 10px 15px 5px #145A32;
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow);
+}
+#loading {
+    min-height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .fact-slides {
     display: none;
     padding: 20px;
     text-align: center;
-    color: white;
+    color: var(--text);
     padding: 20px;
     width: 75%;
     margin: auto;
@@ -348,7 +513,7 @@ footer {
     width: auto;
     padding: 16px;
     margin-top: -22px;
-    color: white;
+    color: var(--text);
     font-weight: bold;
     font-size: 24px;
     transition: 0.6s ease;
@@ -366,7 +531,8 @@ footer {
 }
 
 .prev:hover, .next:hover {
-    color: #16CC21;
+    color: var(--text-secondary);
+    background-color: var(--bg);
 }
 .fade {
   animation-name: fade;
@@ -376,4 +542,7 @@ footer {
 @keyframes fade {
   from {opacity: .4}
   to {opacity: 1}
+}
+.yellow {
+    color: gold;
 }

@@ -58,10 +58,11 @@
         <% } %>
 
     </div>
-    <div class="Heading">
-        <h1 class="title"> TraveLR </h1>
+    <div class="Heading <%= (title === 'Login' || title === 'Register') ? 'centered-title' : '' %>">
+
+        <h1 class="title"> GlobeJumper </h1>            
         <% if(title !== "Login" && title !== "Register") { %>
-            <p onclick="openNav()" class="Hamburger">&#8801;</p>        
+            <h1 onclick="openNav()" class="Hamburger">&#8801;</h1>        
         <% } %>
 
     </div>

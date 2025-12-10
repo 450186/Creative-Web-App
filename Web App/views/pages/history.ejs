@@ -4,20 +4,37 @@
     <p id="errorMessage">No Locations Added</p>
     <p style="text-align: center;"">Visit <a href="home">Home</a> to add locations</p>
 <% } %>
+<div id="history-container">
+    <% locations.forEach(location => { %>
+        <div class="location-div clickable" data-lat="<%= location.latitude %>" data-long="<%= location.longitude %>">
+            <div class="span2">
+            <h2><%= location.country %></h2>
+            <h3><%= location.city %></h3>
+            </div>
+            <p class="label">Start Date</p>
+            <p class="value"><%= location.formattedStart %></p>
 
-<% locations.forEach(location => { %>
-    <div id="location-div">
-        <h2><%= location.country %></h2>
-        <h3><%= location.city %></h3>
-        <hr style="width: 100%;">
-        <p style="margin-bottom: 0;"><%= location.formattedStart %></p>
-        <p style="margin-bottom: 0; font-weight: bold;"> to </p>
-        <p style="margin-bottom: 0;"><%= location.formattedEnd %></p>
-        <p style="font-weight: bold; margin-bottom: 0;">Thoughts:</p>
-        <p style="margin-bottom: 0;"><%= location.notes %></p>
-        <p style="font-weight: bold; margin-bottom: 0;">Rating:</p>
-        <p><%= location.rating %></p>
-    </div>    
-<% }) %>
+            <p class="label">End Date</p>
+            <p class="value"><%= location.formattedEnd %></p>
+
+            <p class="label">Opinions:</p>
+            <p class="value"><%= location.notes %></p>
+            
+            <p class="label">Rating:</p>
+            <p class="value"><%= location.rating %>⭐️</p>
+        </div>    
+    <% }) %>
+</div>
+<script>
+    let locationDivs = document.querySelectorAll(".location-div")
+    locationDivs.forEach(div =>{
+        div.addEventListener("click", () => {
+            const lat = div.dataset.lat;
+            const long = div.dataset.long;
+            window.location.href = `/location?latitude=${lat}&longitude=${long}`
+        })
+    })
+</script>
+
 
 <%- include("../partials/footer") %>

@@ -72,13 +72,63 @@ async function findThingsToDo(latitude, longitude) {
         const geoData = await geoRes.json()
         console.log("GEO DATA:", geoData)
         if(geoData.features && geoData.features.length > 0) {
+
             thingsToDo = geoData.features.map(feature => {
+
+    //Chat GPT helped me with making the categories readable. my solution didnt fully work
+//Below is the prompt I put into chatGPT
+
+//I attempted to make the categories in my location page user readable, my thought process was to split the categories by "." using .split and then getting just what comes after the "."s
+// here is my code:
+// async function findThingsToDo(latitude, longitude) {
+//     const geoURL = `https://api.geoapify.com/v2/places?categories=tourism.sights,entertainment.museum&filter=rect:${Number(longitude)-0.2},${Number(latitude)-0.2},${Number(longitude)+0.2},${Number(latitude)+0.2}&limit=8&apiKey=${GeoAPIKey}&lang=en`
+
+//     console.log("GEO URL:", geoURL)
+//     let thingsToDo = []
+
+//     try {
+//         const geoRes = await fetch(geoURL)
+//         const geoData = await geoRes.json()
+//         console.log("GEO DATA:", geoData)
+//         if(geoData.features && geoData.features.length > 0) {
+//             const categories = feature.properties.categories
+//                         ? feature.properties.categories.join("\n")
+//                         : feature.properties.category || ""
+//             const splitCats = categories.split(".")
+//             splitCats.filter((element, index) => {return index % 2 === 0})
+//             thingsToDo = geoData.features.map(feature => {
+//                 return {
+//                     name: feature.properties.name,
+//                     address: feature.properties.formatted,
+//                     category: splitCats,
+//                     latitude: feature.properties.lat,
+//                     longitude: feature.properties.lon,
+//                     distance: feature.properties.distance,
+//                 }
+//             })
+//         }
+//     } catch (e) {
+//         console.error("Error fetching GeoAPI data:", e)
+//     }
+//     return thingsToDo
+// }
+
+                const categories = feature.properties.categories || []
+                const readable = categories.map(cat => {
+                    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
+                    const parts = cat.split(".")
+                    let last = parts[parts.length - 1]
+                    last = last.replace(/_/g, " ")
+
+                    if(last === "yes") return "Accessible"
+                    if(last === "no") return "Not Accessible"
+
+                    return last.charAt(0).toUpperCase() + last.slice(1);
+                })    
                 return {
                     name: feature.properties.name,
                     address: feature.properties.formatted,
-                    category: feature.properties.categories
-                        ? feature.properties.categories.join("\n")
-                        : feature.properties.category || "",
+                    category: readable.join("\n"),
                     latitude: feature.properties.lat,
                     longitude: feature.properties.lon,
                     distance: feature.properties.distance,
@@ -229,7 +279,7 @@ app.get("/history", checkLogin, async (req, res) => {
 app.get("/api/things-to-do", async (req, res) => {
     const {latitude, longitude} = req.query
     try {
-    const thingsToDo = await findThingsToDo(latitude, longitude)
+    const thingsToDo = await findThingsToDo(Number(latitude), Number(longitude))
     res.json({thingsToDo})
     } catch (e) {
         console.error(e)
@@ -243,7 +293,6 @@ app.get("/location", checkLogin ,async (req, res) => {
     // https://nominatim.org/release-docs/develop/api/Reverse/
     const username = req.session.username
 
-    const geoURL = `https://api.geoapify.com/v2/places?category=tourism.sights,entertainment.museum&filter=rect:${Number(longitude)-0.2},${Number(latitude)-0.2},${Number(longitude)+0.2},${Number(latitude)+0.2}&limit=5&apiKey=${GeoAPIKey}&lang=en`;
     const NomURL = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&zoom=10&addressdetails=1&accept-language=en`;
 
     try {    
@@ -288,8 +337,8 @@ app.get("/location", checkLogin ,async (req, res) => {
             username: req.session.username,
             Loggedin: checkLoggedin(req),
             title: Country,
-            latitude: latitude,
-            longitude: longitude,
+            latitude: Number(latitude),
+            longitude: Number(longitude),
             city: City || "",
             country: Country,
             countryCode: countryCode,
@@ -361,7 +410,7 @@ app.post("/add-location", checkLogin, async (req, res) => {
         }
             console.error("Error saving user:", e);
         res.render('pages/location', {
-            errorMessage: req.session.errorMessage ="Could not save Location",
+            errorMessage: req.session.errorMessage = "Could not save Location",
             username: req.session.username,
             Loggedin: checkLoggedin(req),
             title: req.body.country,
@@ -374,6 +423,19 @@ app.post("/add-location", checkLogin, async (req, res) => {
             locationFound: locationFound,
         })
     }
+})
+app.post("/delete-location", checkLogin, async (req, res) => {
+    username = req.session.username
+    const {city, country} = req.body
+
+    const User = await userModel.userData.findOne({username: username})
+    
+    await userModel.userData.findOneAndUpdate(
+        {username: username},
+        {$pull: {PlacesVisited: {city: city, country: country}}}
+    )
+
+    res.redirect("/home")
 })
 
 app.get("/settings", (req, res) => {

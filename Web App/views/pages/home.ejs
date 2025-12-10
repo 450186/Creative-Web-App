@@ -30,21 +30,25 @@
         <h3>Key:</h3>
         <div class="key">
             <div id="green-div">
-                <img class="pins" src="/assets/GreenPin.png" alt="Green Pin">
-                <div class="key-text">
-                    <p>Places You've Visited</p>
+                <div class="key-left">
+                    <img class="pins" src="/assets/GreenPin.png" alt="Green Pin">
+                    <p>Visited</p>
+                </div>
+                <div class="key-right">
+                    <input class="checkboxes" checked type="checkbox" id="green-check">
                     <label id="green-label" for="green-check">{greenLabel}</label>
-                    <input checked type="checkbox" id="green-check">                
-                </div>                
+                </div>            
             </div>
         </div>
             <div class="key">
                 <div id="gold-div">
-                <img class="pins" src="/assets/GoldPin.png" alt="Gold Pin">
-                <div class="key-text">
-                    <p>Places You Would Like to Visit</p>
+                    <div class="key-left">
+                        <img class="pins" src="/assets/GoldPin.png" alt="Gold Pin">
+                        <p>WishList</p>
+                    </div>
+                <div class="key-right">
+                    <input class="checkboxes" checked type="checkbox" id="gold-check">
                     <label id="gold-label" for="gold-check">{goldLabel}</label>
-                    <input checked type="checkbox" id="gold-check">
                 </div>
             </div>
         </div>
@@ -128,6 +132,9 @@
     let greenLabel = document.getElementById("green-label")
     let goldLabel = document.getElementById("gold-label")
     let errorMessage = document.getElementById("errorMessage")
+    document.getElementById("green-div").onclick = () => greenCheck.click();
+    document.getElementById("gold-div").onclick = () => goldCheck.click();
+
 
     let greenPins = []
     let goldPins = []
