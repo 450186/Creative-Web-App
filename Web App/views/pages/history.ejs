@@ -4,6 +4,26 @@
     <p id="errorMessage">No Locations Added</p>
     <p style="text-align: center;"">Visit <a href="home">Home</a> to add locations</p>
 <% } %>
+<!-- <select>
+    <option>
+        Date - Ascending
+    </option>
+    <option>
+        Date - Descending
+    </option>
+    <option>
+        City A-Z - Ascending
+    </option>
+    <option>
+        City A-Z - Descending
+    </option>
+    <option>
+        Rating - Ascending
+    </option>
+    <option>
+        Rating - Descending
+    </option>
+</select> -->
 <div id="history-container">
     <% locations.forEach(location => { %>
         <div class="location-div clickable" data-lat="<%= location.latitude %>" data-long="<%= location.longitude %>">
