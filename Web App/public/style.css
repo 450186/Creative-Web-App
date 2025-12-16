@@ -98,6 +98,12 @@ header {
     margin: 20px auto 0;
     width: fit-content;
 }
+.limit {
+    font-size: 15px;
+    padding: 0;
+    margin-left: 20px;
+    color: red;
+}
 #upload-more {
     width: calc(fit-content + 20px) !important;
 }
@@ -139,6 +145,12 @@ a:hover {
     font-weight: bold;
     color: var(--text-secondary);
     cursor: pointer;
+}
+a {
+    color: var(--text);
+}   
+a:hover {
+    color: var(--accent-warm);
 }
 
 .sidenav a {
@@ -351,7 +363,7 @@ textarea {
     box-shadow: var(--shadow);
  }
  .clickable:hover {
-    background-color: var(--accent-warm-dark);
+    background-color: var(--accent-warm);
     cursor: pointer;
  }
  .span2 {
@@ -521,6 +533,31 @@ textarea {
 }
 #notes-div label {
     vertical-align: text-top;
+}
+#searchbar {
+    position: relative;
+    width: 40%;
+    margin: 20px auto;
+}
+#searchbar input {
+    width: 100%;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 10px 30px 10px 10px;
+}
+#searchbar button {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-75%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 18px;
+}
+#searchbar button:hover {
+    color: var(--accent-warm);
 }
 
 /* Map Styling */

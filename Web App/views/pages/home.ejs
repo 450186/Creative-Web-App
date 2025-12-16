@@ -23,6 +23,14 @@
         }, 4000)
     }
 </script>
+<form action="/search-location" method="GET" id="location-search">
+    <div id="searchbar">
+        <input type="text" name="query" placeholder="Search for a City..." required>
+        <button type="submit" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass fa-rotate-90"></i>
+        </button>
+    </div>
+</form>
 <div id="map-container">
     <div id="map"></div>
     <div id="location-data" data-wishlist="<%= JSON.stringify(wishList) %>" data-locations="<%= JSON.stringify(locations) %>"></div>

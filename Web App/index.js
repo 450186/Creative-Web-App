@@ -16,6 +16,8 @@ const bcrypt = require("bcrypt")
 
 const dotenv = require("dotenv").config();
 
+//Originally stored photos in a folder - chatGPT helped me to store them using cloudinary
+//this helped with hosting on Render
 const cloudinary = require("cloudinary").v2
 const {CloudinaryStorage} = require("multer-storage-cloudinary")
 
@@ -26,6 +28,7 @@ cloudinary.config({
 })
 
 const fiveMin = 5 * 60 * 1000;
+const halfHour = 30 * 60 * 1000;
 const OneHour = 1 * 60 * 60 * 1000;
 
 const mongoDBusername = process.env.mongoDBusername;
@@ -60,16 +63,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const multer = require("multer")
 
-// const photoStorage = multer.diskStorage({
-//     destination: function(req, file, cb) {
-//         cb(null, path.join(__dirname, "uploads", "locations"));
-//     },
-//     filename: function(req, file, cb) {
-//         const UniqueName = Date.now() + "-" + Math.round(Math.random() * 1E8)
-//         cb(null, UniqueName + path.extname(file.originalname))
-//     }
-// })
-
 const storage = new CloudinaryStorage({
     cloudinary,
     params: {
@@ -89,7 +82,7 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({
     storage,
-    limits: {fileSize: 5 * 1024 * 1024}
+    limits: {fileSize: 15 * 1024 * 1024}
 })
 
 app.use(express.urlencoded({ extended: false }));
@@ -218,8 +211,10 @@ app.get("/home", checkLogin, async (req, res) => {
         Loggedin: checkLoggedin(req),
         title: "Home",
         locations: locationData.PlacesVisited ?? [],
-        wishList: locationData.wishList ?? []
+        wishList: locationData.wishList ?? [],
+        errorMessage: req.session.errorMessage
     })
+    req.session.errorMessage = null
 })
 
 app.get("/wishlist", checkLogin, async (req, res) => {
@@ -460,6 +455,36 @@ app.post("/location/upload", checkLogin, async (req, res) => {
     });
 })
 
+app.get("/search-location", checkLogin, async (req, res) => {
+    const query = req.query.query
+
+    if(!query) return res.redirect("/home");
+
+    const searchUrl = `https://nominatim.openstreetmap.org/search?` +
+        `q=${encodeURIComponent(query)}` +
+        `&format=json&limit=1&addressdetails=1`;
+
+    try {
+        const response = await fetch(searchUrl, {
+            headers: {"User-Agent": "GlobeJumper"}
+        })
+
+        const searchRes = await response.json()
+
+        if(!searchRes || searchRes.length === 0) {
+            req.session.errorMessage = "Could Not find that City"
+            return res.redirect("/home")
+        }
+        const {lat, lon} = searchRes[0]
+
+        res.redirect(`/location?latitude=${lat}&longitude=${lon}`);
+    } catch (e) {
+        console.log("Search error: ", e)
+        res.redirect("/home")
+    }
+
+})
+
 app.post("/add-location", checkLogin, (req, res) => {
     //chatGPT assistance on how to get error messages for multer
     upload.array("photos", 3)(req, res, async (err) => {
@@ -517,8 +542,13 @@ app.post("/add-location", checkLogin, (req, res) => {
                 rating: Number(rating),
             };
 
-            User.PlacesVisited.push(newLoc);
-            await User.save();
+            await userModel.userData.findOneAndUpdate(
+                {username},
+                {
+                    $push: {PlacesVisited: newLoc},
+                    $pull: {wishList: {city, country}},
+                }
+            )
 
             res.redirect("/history");
         } catch (e) {

@@ -30,6 +30,9 @@
     action="add-location"
     enctype="multipart/form-data" 
     >
+        <% if (typeof errorMessage !== 'undefined') { %>
+            <p id="errorMessage"><%= errorMessage %></p>
+        <% } %>
         <input type="hidden" name="city" value="<%= city || "" %>">
         <input type="hidden" name="country" value="<%= country %>">
         <input type="hidden" name="countryCode" value="<%= countryCode %>">
@@ -43,7 +46,9 @@
             <label for="to-date">To:</label>
             <input type="date" id="visit-date-end" name="visitDateEnd">
         </div>
+        
         <label for="photos">Photos:</label>
+        <span class="limit">Max: 3</span><br>
         <input type="file" id="photos-upload" name="photos" multiple><br>
         <div id="notes-div">
             <label style="vertical-align: baseline;" for="notes">Notes:</label>
@@ -102,6 +107,7 @@
         <input type="hidden" name="latitude" value="<%= latitude %>">
         <input type="hidden" name="longitude" value="<%= longitude %>">
         <input type="file" name="photos" multiple><br>
+        <p style="text-align: center;">*3 max at a time</p>
         <input type="submit" name="add-photos" value="Add Photos">
     </form>
     <script>
