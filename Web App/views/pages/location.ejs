@@ -28,14 +28,16 @@
     method="POST" 
     style="padding-top: 10px; display: none;" 
     action="add-location"
+    enctype="multipart/form-data" 
     >
         <input type="hidden" name="city" value="<%= city || "" %>">
         <input type="hidden" name="country" value="<%= country %>">
         <input type="hidden" name="countryCode" value="<%= countryCode %>">
         <input type="hidden" name="longitude" value="<%= longitude %>">
         <input type="hidden" name="latitude" value="<%= latitude %>">
+        <h2 style="line-height: 1;"><span>Add <%= city %></span><a href="javascript:void(0)" class="closebtn" onclick="closeDiv()">&times;</a></h2>
         <label for="visit-date">When did you visit?</label>
-        <span><a href="javascript:void(0)" class="closebtn" onclick="closeDiv()">&times;</a></span>
+            
         <div id="date-select">
             <input type="date" id="visit-date-start" name="visitDateStart">
             <label for="to-date">To:</label>
@@ -61,7 +63,7 @@
     </form>
 <% } %>
 <% if (locationFound) { %>
-
+<div id="photos-overlay"></div>
     <form id="foundLoc-form" action="/delete-location" method="POST">
         <input type="hidden" name="city" value="<%= visitedData.city %>">
         <input type="hidden" name="country" value="<%= visitedData.country %>">
@@ -71,36 +73,94 @@
 
             <p class="label">End Date</p>
             <p class="value"><%= visitedData.formattedEnd %></p>
+            <% if (visitedData.photos.length > 0) { %>
+                <div id="image-modal" class="modal" onclick="closeImg()">
+                    <img id="modal-img">
+                </div>
+                <p id="photo-label" class="label">Photos</p>
+                <div class="gallery value">
+                    <% visitedData.photos.forEach(photo => { %>
+                            <img src="<%= photo %>" alt="<%= visitedData.city %>" class="location-photo">
+                    <% }) %>
+                </div>
+            <% } %>
 
             <p class="label">Opinions:</p>
             <p class="value"><%= visitedData.notes %></p>
             
             <p class="label">Rating:</p>
             <p class="value"><%= visitedData.rating %>⭐️</p>
+            <input id="addPhotos-butt" class="span2" type="button" name="openPhotos" value="Add photos">
             <input class="span2" type="submit" name="delete-loc" id="delete-loc" value="Delete Location">
         </div> 
-    </form>   
+    </form>
+    <form  style="display: none;" id="upload-more" method="POST" action="/location/upload" enctype="multipart/form-data">
+        <div id="modal-header">
+        <h3>Upload More Photos</h3>
+        <span id="close-butt">&times;</span>
+        </div>
+        <input type="hidden" name="latitude" value="<%= latitude %>">
+        <input type="hidden" name="longitude" value="<%= longitude %>">
+        <input type="file" name="photos" multiple><br>
+        <input type="submit" name="add-photos" value="Add Photos">
+    </form>
+    <script>
+        let uploadMore = document.getElementById("upload-more")
+        let uploadOverlay = document.getElementById("photos-overlay")
+        let openModalButt = document.getElementById("addPhotos-butt")
+        let closeModalButt = document.getElementById("close-butt")
+        uploadOverlay.addEventListener("click", () => {
+            uploadOverlay.style.display = "none"
+            uploadMore.style.display = "none" 
+        })
+        openModalButt.addEventListener("click", () => {
+            uploadMore.style.display = "block"
+            uploadOverlay.style.display = "block"
+        })
+        closeModalButt.addEventListener("click", () => {
+            uploadOverlay.style.display = "none"
+            uploadMore.style.display = "none"
+        })    
+    </script>
 
 <% } %>
     <div id="things-to-do-div">
         <h2 style="text-align: center; margin-bottom: 10px; margin-top: 20px;">Things to do around <%= city %>:</h2>
 
     <!-- https://www.w3schools.com/howto/howto_js_slideshow.asp -->
-        <div class="slideshow-container">
+        <div class="location slideshow-container">
             <div id="loading"></div>
         </div>
-        
+        <div id="dot-div" style="text-align: center;">
+
+        </div>    
  
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+<script>
+    let photoLabel = document.getElementById("photo-label")
+    let gallery = document.getElementsByClassName("gallery")[0]
+    let imgModal = document.getElementById("image-modal")
+    let modalPhoto = document.getElementById("modal-img")
+
+    document.querySelectorAll(".location-photo").forEach(img => {
+        img.addEventListener("click", e => {
+            modalPhoto.src = e.target.src
+            imgModal.style.display = "flex"
+        })
+    })
+    function closeImg() {
+        imgModal.style.display = "none"
+    }
+</script>
 <script>
     const latitude = Number("<%= latitude %>");
     const longitude = Number("<%= longitude %>");
 
     const loader = document.getElementById("loading")
     const spinner = new Spinner({
-        lines: 12, length: 7, width: 5, radius: 10, color: "#2A6F75"
+        lines: 12, length: 7, width: 5, radius: 10, color: "#2D3436"
     }).spin(loader)
 
     fetch(`/api/things-to-do?latitude=${latitude}&longitude=${longitude}`)
@@ -115,13 +175,14 @@
             return;
         }
         //https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML
+            container.insertAdjacentHTML("beforeend", `
+                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+                <a class="next" onclick="plusSlides(1)">&#10095;</a>
+            `);
 
-        container.insertAdjacentHTML("beforeend", `
-            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-            <a class="next" onclick="plusSlides(1)">&#10095;</a>
-        `);
 
         thingsToDo.forEach(item => {
+            let index = 1
             const slideDiv = document.createElement("div");
             slideDiv.classList.add("fact-slides");
             const title = document.createElement("h3");
@@ -129,12 +190,12 @@
             slideDiv.appendChild(title);
             if(item.address) {
                 const address = document.createElement("p");
-                address.textContent = item.address;
+                address.innerHTML = `<strong>Address:</strong> ${item.address}`;
                 slideDiv.appendChild(address);
             }
             if(item.distance) {
                 const distance = document.createElement("p");
-                distance.textContent = `Distance: ${item.distance.toFixed(2)} m`;
+                distance.innerHTML = `<strong>Distance:</strong> ${item.distance.toFixed(2)} m`;
                 slideDiv.appendChild(distance);
             }
             if(item.category && item.category.length > 0) {
@@ -147,6 +208,12 @@
             console.log(`Name: ${item.name}`)
             console.log(`categories: ${item.category}`);
             console.log(item)
+
+            const dotDiv = document.getElementById("dot-div")
+            dotDiv.insertAdjacentHTML("beforeend", 
+                `<span class="dot" onclick="currentSlide(index)"></span>`
+            )
+            index++
         })
         slideIndex = 1;
         showSlides(slideIndex);
@@ -200,21 +267,27 @@ if (yesRadio && noRadio && locationForm && overlay) {
         function plusSlides(n) {
             showSlides(slideIndex += n);
         }
+        function currentSlide(n) {
+            showSlides(slideIndex = n)
+        }
         function showSlides(n) {
             let i;
             let slides = document.getElementsByClassName('fact-slides');
-
+            let dots = document.getElementsByClassName('dot')
             if(slides.length === 0) {
                 return;
             }
-
             if(n > slides.length) {slideIndex = 1}
             if(n < 1) {slideIndex = slides.length}
 
             for(i=0; i < slides.length; i++) {
                 slides[i].style.display = "none";
             }
+            for(i=0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "")
+            }
             slides[slideIndex - 1].style.display = "block"
+            dots[slideIndex-1].className += " active"
         }
 
 

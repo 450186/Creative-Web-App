@@ -4,22 +4,79 @@
         <h2 style="margin-top: 20px;">Account Details</h2>
         <div class="account-row">
             <label id="user-field">Username: <%= username %> </label>
-            <input type="button" id="username-button" name="Edit" value="Edit"><br>
+            <input type="button" style="margin-top: 0;" id="username-button" name="Edit" value="Edit"><br>
         </div>
         <div class="account-row">
             <label data-real-password="<%= password %>" id="password-field">Password: <%= passwordMask %> </label>
             <i id="show-button" class="fa-solid fa-eye"></i>
-            <input type="button" id="password-button" name="Edit" value="Edit"><br>
+            <input type="button" style="margin-top: 0;" id="password-button" name="Edit" value="Edit"><br>
         </div>
         <div class="account-row">
             <label id="firstname-field">First name: <%= firstName %> </label>
-            <input type="button" id="firstname-button" name="Edit" value="Edit"><br>
+            <input type="button" style="margin-top: 0;" id="firstname-button" name="Edit" value="Edit"><br>
         </div>
         <div class="account-row">
             <label id="lastname-field">Last name: <%= lastName %></label>
-            <input type="button" id="lastname-button" name="Edit" value="Edit"><br>
-        </div>    
+            <input type="button" style="margin-top: 0;" id="lastname-button" name="Edit" value="Edit"><br>
+        </div>   
+            <form id="delete-form" action="/delete-user" method="POST">
+                <input type="hidden" name="username" value="<%= username %>">
+                <input type="button" onclick="openDelete()" name="delete-user" value="Delete Account">
+            </form>
+            <div id="delete-overlay"></div>
+
+            <div id="account-alert">
+                <h2 style="text-align: center;">Are you sure you want to delete your account?</h2>
+
+                <div id="delete-options">
+                    <button id="delete-yes">Yes</button>
+                    <button onclick="closeDelete()">No</button>
+                </div>
+            </div>
+    <script>
+        let deleteModal = document.getElementById("account-alert")
+        let deleteOverlay = document.getElementById("delete-overlay")
+        let deleteYes = document.getElementById("delete-yes")
+        let deleteForm = document.getElementById("delete-form")
+
+        deleteYes.addEventListener("click", () => {
+            deleteForm.submit()
+        })
+
+        function closeDelete() {
+            deleteModal.style.display = "none"
+            deleteOverlay.style.display = "none"
+        }
+        function openDelete() {
+            deleteModal.style.display = "block"
+            deleteOverlay.style.display = "block"
+        }
+    </script>
     </div>
+                <div style="margin-top: 20px;" id="password-rules-div">
+                <h2 style="line-height: 1; margin-top: 0;">Password Rules<a id="closebtn" class="closebtn">&times;</a></h2>
+                <ul id="password-list">
+                    <li>Must be at least 8 characters</li>
+                    <li>Must include 1 uppercase letter</li>
+                    <li>Must include 1 number</li>
+                    <li>Must include 1 special character</li>
+                </ul>
+            </div>
+            <script>
+                let info = document.getElementById("info-icon")
+                let closebtn = document.getElementById("closebtn")
+                let passwordDiv = document.getElementById("password-rules-div")
+
+                function togglePassRules() {
+                    if(passwordDiv.classList.contains("show")) {
+                        passwordDiv.classList.remove("show")
+                    } else {
+                        passwordDiv.classList.add("show")
+                    }
+                }
+                info.addEventListener("click", togglePassRules)
+                closebtn.addEventListener("click", togglePassRules)
+            </script>
 
         <script defer>
             document.getElementById("username-button").addEventListener("click", usernameEdit)
@@ -50,6 +107,7 @@
                 let userButt = document.getElementById("username-button")
                 input.type = "text"
                 input.value = field.textContent.replace("Username: ", "")
+                input.classList.add("label")
                 userButt.value = "Done"
                 userButt.type = "button"
                 field.replaceWith(input)
@@ -81,7 +139,8 @@
                 eye.style.display = "none"
                 input.type = "text"
                 input.value = realPassword
-                
+                input.classList.add("label")
+                togglePassRules()
                 passButt.value = "Done"
                 passButt.type = "button"
                 field.replaceWith(input)
@@ -111,7 +170,9 @@
                 let input = document.createElement("input")
                 let userButt = document.getElementById("firstname-button")
                 input.type = "text"
-                input.value = field.textContent.replace("Firstname: ", "")
+                input.value = field.textContent.replace("First name: ", "")
+                input.placeholder = "First Name: "
+                input.classList.add("label")
                 userButt.value = "Done"
                 userButt.type = "button"
                 field.replaceWith(input)
@@ -140,7 +201,9 @@
                 let input = document.createElement("input")
                 let userButt = document.getElementById("lastname-button")
                 input.type = "text"
-                input.value = field.textContent.replace("Lastname: ", "")
+                input.value = field.textContent.replace("Last name: ", "")
+                input.placeholder = "Last Name: "
+                input.classList.add("label")
                 userButt.value = "Done"
                 userButt.type = "button"
                 field.replaceWith(input)

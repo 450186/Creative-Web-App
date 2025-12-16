@@ -1,19 +1,56 @@
 <%- include('../partials/header') %>
 
-    <form action="/register" method="POST">
-        <label>Username</label>
-        <input type="text" id="username" name="username" required><br>
-        <label>Password</label>
-        <input type="password" id="password" name="password" required><br>
-        <label>First Name</label>
-        <input type="text" id="Firstname" name="firstName" required><br>
-        <label>Last Name</label>
-        <input type="text" id="Lastname" name="lastName" required><br>
-        <input type="submit" value="Register">
-    </form>
+    <form id="register-form" action="/register" method="POST">
+        <div class="form-row">
+            <label>Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-row">
+            <label style="position: relative;">
+                Password
+                <i id="info-icon" class="fa-solid fa-circle-info"></i>
+            </label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-row">
+            <label>First Name</label>
+            <input type="text" id="Firstname" name="firstName" required>
+        </div>
+        <div class="form-row">
+            <label>Last Name</label>
+            <input type="text" id="Lastname" name="lastName" required>
+        </div>
+        <input id="register-butt" type="submit" value="Register">
+    </form>    
+    <p style="text-align: center;">Already have an account? <a href="/login">Login here</a></p>
+    <div id="password-rules-div">
+        <h2 style="line-height: 1; margin-top: 0;">Password Rules<a id="closebtn" class="closebtn">&times;</a></h2>
+        <ul id="password-list">
+            <li>Must be at least 8 characters</li>
+            <li>Must include 1 uppercase letter</li>
+            <li>Must include 1 number</li>
+            <li>Must include 1 special character</li>
+        </ul>
+    </div>
 
     <% if(typeof errorMessage !== 'undefined') { %>
         <p id="errorMessage"> <%= errorMessage %> </p>
     <% } %>
+    
 
+    <script>
+        let info = document.getElementById("info-icon")
+        let closebtn = document.getElementById("closebtn")
+        let passwordDiv = document.getElementById("password-rules-div")
+
+        function togglePassRules() {
+            if(passwordDiv.classList.contains("show")) {
+                passwordDiv.classList.remove("show")
+            } else {
+                passwordDiv.classList.add("show")
+            }
+        }
+        info.addEventListener("click", togglePassRules)
+        closebtn.addEventListener("click", togglePassRules)
+    </script>
 <%- include('../partials/footer') %>

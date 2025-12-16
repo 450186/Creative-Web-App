@@ -1,11 +1,15 @@
 <%- include("../partials/header") %>
 
-    <form action="/login" method="POST" class="login-form">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Login">
+    <form action="/login" method="POST" id="login-form">
+        <div class="form-row">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-row">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <input id="login-butt" type="submit" value="Login">
     </form>
     <% if (typeof errorMessage !== 'undefined') { %>
         <p id="errorMessage"><%= errorMessage %></p>

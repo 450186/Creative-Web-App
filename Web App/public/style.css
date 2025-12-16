@@ -6,6 +6,7 @@
     /* ===== Backgrounds ===== */
     --bg: #F3E9D2; 
     --bg-card: #E6D7B9;
+    --header-footer: #cdbc9c;
 
 
     /* ===== Text ===== */
@@ -38,35 +39,85 @@ body {
     flex-direction: column;
 }
 
-.Heading {
+header {
+    display: flex;
+    flex-flow: row nowrap;
+    background-color: var(--header-footer);
+    width: 100%;
+}
+.Heading-content {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     width: 60%;
+    margin-top: 0;
     margin: auto;
 }
+
 .Hamburger {
-    font-size: 48px;
+    font-size: 60px;
     margin-top: 0;
     cursor: pointer;
     line-height: 1;
     margin-top: 10px;
+    margin-bottom: 10px;
 }
 .title {
     font-size: 48px;
     margin-top: 0;
     line-height: 1;
     margin-top: 10px;
+    margin-bottom: 10px;
 }
-.Heading.centered-title {
+.Heading-content.centered-title {
     justify-content: center;
-    margin-top: 10px
 }
 
 .Hamburger:hover {
     font-weight: bold;
     color: var(--text-dark);
+}
+#landing-list-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 40%;
+    margin: 20px auto 20px;
+    background-color: var(--bg-card);
+    border-radius: 50px;
+    box-shadow: var(--shadow);
+}
+#star:hover {
+    cursor: pointer;
+}
+
+#addPhotos-butt {
+    margin-bottom: 20px;
+    margin: 20px auto 0;
+    width: fit-content;
+}
+#upload-more {
+    width: calc(fit-content + 20px) !important;
+}
+#landing-list, #password-list {
+    list-style: none;
+    position: relative;
+    width: 80%;
+}
+#password-list li::before {
+    content: "✔️";
+}
+#landing-list li::before {
+    content: "📍";
+}
+.content {
+    padding-bottom: 20px;
+}
+.second-heading {
+    text-align: center;
+    margin: 20px;
 }
 .sidenav {
     height: 100%;
@@ -103,7 +154,25 @@ a:hover {
 .sidenav-header .closebtn {
     cursor: pointer;
 }
-
+#close-butt {
+    cursor: pointer;
+    line-height: 1;
+}
+#close-butt:hover {
+    color: var(--accent-warm);
+}
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+}
+.location-photo {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+}
 .sidenav a:nth-child(2) {
     padding-top: 0px;
 }
@@ -132,6 +201,41 @@ a:hover {
 }
 
 /* Form Styles */
+#login-butt, #register-butt {
+    width: fit-content;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+#login-form, #register-form {
+    margin: auto;
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow);
+    border-radius: 50px;
+}
+.form-row {
+    display: grid;
+    grid-template-columns: 0.3fr 0.7fr;
+    align-items: center;
+}
+.form-row:first-of-type {
+    padding-top: 20px;
+}
+.form-row label {
+    text-align: right;
+    padding-left: 20px;
+    line-height: 1;
+}
+.form-row input {
+    width: 40% !important;
+    box-sizing: border-box;
+    justify-self: center;
+}
+#info-icon {
+    line-height: 1;
+    cursor: pointer;
+
+}
 form {
     width: 60%;
     margin-left: auto;
@@ -168,7 +272,7 @@ input[type="password"] {
     transition: 0.2s ease;
 }
 
-input[type="submit"], input[type="button"] {
+input[type="submit"], input[type="button"], button {
     background-color: var(--accent-warm);
     color: var(--text-secondary);
     padding: 8px 16px;
@@ -178,7 +282,10 @@ input[type="submit"], input[type="button"] {
     margin-top: 10px;
 }
 
-input[type="submit"]:hover, select:hover, input[type="button"]:hover {
+input[type="submit"]:hover, 
+select:hover, 
+input[type="button"]:hover,
+button:hover {
     background-color: var(--accent-warm-dark);
     font-weight: bold;
 }
@@ -224,7 +331,6 @@ textarea {
     font-weight: bold;
     text-align: center;
 }
-
 /* History Page */
 #history-container, #foundLoc-form {
     display: flex;
@@ -262,9 +368,35 @@ textarea {
     max-width: 50%;
     margin: auto;
 }
+#password-rules-div {
+    margin-bottom: 20px;
+    display: flex;
+    flex-flow: column;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    left: 50%;
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow);
+    color: var(--text);
+    text-align: left;
+    border-radius: 50px;
+    z-index: 1500;
+    padding: 20px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
 
+#password-rules-div.show {
+    display: block;
+    opacity: 1;
+}
+#info-icon:hover {
+    color: var(--accent-warm);
+}
 
-#location-form {
+#location-form, #upload-more {
     margin-bottom: 20px;
     display: flex;
     flex-flow: column;
@@ -277,28 +409,59 @@ textarea {
     color: var(--text);
     text-align: center;
     border-radius: 50px;
-    z-index: 50;
+    z-index: 1500;
     padding: 20px;
     position: fixed;
 }
-#location-form .closebtn {
-    position: absolute;
-    right: 40px;
+#location-form h2, #password-rules-div h2, #upload-more h2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 10px;
+}
+#modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#location-form .closebtn, #password-rules-div .closebtn, #upload-more #close-butt {
+    line-height: 1;
     text-decoration: none;
-    font-size: larger;
+    font-size: 48px;
     color: var(--text);
+    cursor: pointer;
 }
-#location-form .closebtn:hover {
-    color: var(--text-secondary);
+#location-form h2 .closebtn:hover, #password-rules-div h2 .closebtn:hover {
+    color: var(--accent-warm);
+    font-weight: bold;
 }
-#modal-overlay {
+#modal-overlay, #delete-overlay, #photos-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.2);
-    z-index: 49;
+    z-index: 1499;
+    display: none;
+}
+#account-alert {
+    margin-bottom: 20px;
+    display: flex;
+    flex-flow: column;
+    width: 40%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow);
+    color: var(--text);
+    text-align: center;
+    border-radius: 50px;
+    z-index: 1500;
+    padding: 20px;
+    position: fixed;
     display: none;
 }
 
@@ -327,9 +490,10 @@ textarea {
     position: relative;
 }
 
-.account-row label {
-    font-size: 1.1em;
-    flex: 1;
+.account-row label, .account-row .label {
+    font-size: 1.1em !important;
+    flex: 1 !important;
+    margin-right: 5px;
 }
 
 /* History Page */
@@ -443,14 +607,23 @@ textarea {
 .checkboxes {
     margin-top: 5px;
 }
+#footer {
+    display: flex;
+    flex-wrap: row nowrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+    z-index: 1000;
+    background-color: var(--header-footer);
+}
 
-
-footer {
+#footer-content {
     text-align: center;
+    width: 60%;
+    margin: auto;
     font-weight: bold;
-    margin-right: 20px;
-    padding: 1rem;
-    padding-bottom: 0px;
+    margin: 10px;
 }
 
 /* Leaflet popup */
@@ -497,7 +670,7 @@ footer {
     align-items: center;
 }
 
-.fact-slides {
+.fact-slides, .slides {
     display: none;
     padding: 20px;
     text-align: center;
@@ -529,7 +702,24 @@ footer {
     right: 0;
     border-radius: 3px 0 0 3px;
 }
-
+.dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0, 2px;
+    background-color: var(--text);
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+    margin-top: 20px;
+    margin-right: 5px
+}
+.location .dot {
+    margin-top: 20px;
+}
+.active, .dot:hover {
+    background-color: var(--accent-warm-dark);
+}
 .prev:hover, .next:hover {
     color: var(--text-secondary);
     background-color: var(--bg);
@@ -545,4 +735,18 @@ footer {
 }
 .yellow {
     color: gold;
+}
+#image-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    background: rgba(0, 0, 0, 0.4);
+}
+#image-modal img {
+    max-width: 80%;
+    max-height: 90%;
+    border-radius: 6px;
 }

@@ -17,6 +17,7 @@ const dotenv = require("dotenv").config();
 
 
 const fiveMin = 5 * 60 * 1000;
+const OneHour = 1 * 60 * 60 * 1000;
 
 const mongoDBusername = process.env.mongoDBusername;
 const mongoDBpassword = process.env.mongoDBpassword;
@@ -32,6 +33,7 @@ app.use(session({
 
 const connectionString = `mongodb+srv://${mongoDBusername}:${mongoDBpassword}@web-app-cluster.krmiigl.mongodb.net/${mongoAppName}?retryWrites=true&w=majority`;
 const mongoose = require("mongoose");
+const { title } = require("process")
 
 mongoose.connect(connectionString)
 .catch((err) => {
@@ -41,6 +43,32 @@ mongoose.connect(connectionString)
 app.set('view engine', 'ejs')
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, "uploads")))
+
+const multer = require("multer")
+
+const photoStorage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, path.join(__dirname, "uploads", "locations"));
+    },
+    filename: function(req, file, cb) {
+        const UniqueName = Date.now() + "-" + Math.round(Math.random() * 1E8)
+        cb(null, UniqueName + path.extname(file.originalname))
+    }
+})
+function fileFilter (req, file, cb) {
+    const accepted = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']
+    if(accepted.includes(file.mimetype)) {
+        cb(null, true)
+    } else {
+        cb(new Error("Incorrect format! Only JPEG, JPG, PNG, or WEBP accepted"))
+    }
+}
+const upload = multer({
+    storage: photoStorage, 
+    fileFilter,
+    limits: {fileSize: 20 * 1024 * 1024}
+})
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -50,7 +78,7 @@ function checkLogin(req, res, next) {
             next();
         } else {
             req.session.destroy();
-            res.redirect("/login");
+            res.redirect("/landing");
         }
     }
 function checkLoggedin(request) {
@@ -62,6 +90,7 @@ function format(d) {
 }
 
 async function findThingsToDo(latitude, longitude) {
+    // https://apidocs.geoapify.com/docs/places/#api
     const geoURL = `https://api.geoapify.com/v2/places?categories=tourism.sights,entertainment.museum&filter=rect:${Number(longitude)-0.2},${Number(latitude)-0.2},${Number(longitude)+0.2},${Number(latitude)+0.2}&limit=8&apiKey=${GeoAPIKey}&lang=en`
 
     console.log("GEO URL:", geoURL)
@@ -142,7 +171,14 @@ async function findThingsToDo(latitude, longitude) {
 }
 
 app.get("/", (req, res) => {
-    res.redirect("/login")
+    res.render('pages/landing', {
+        title: "Welcome!"
+    })
+})
+app.get("/landing", (req, res) => {
+    res.render('pages/landing', {
+        title: "Welcome!"
+    })
 })
 
 app.get("/home", checkLogin, async (req, res) => {
@@ -204,7 +240,7 @@ app.post("/add-wishlist", checkLogin, async (req, res) => {
         const User = await userModel.userData.findOne({username: req.session.username})
         if(!User) {
             console.error("User not found!")
-            return res.redirect("/login")
+            return res.redirect("/landing")
         }
         User.wishList.push(newWishlist)
         await User.save()
@@ -234,7 +270,7 @@ app.post("/remove-wishlist", checkLogin, async (req, res) => {
         {username: username},
         {$pull: {wishList: {city: city, country: country}}}
     )
-    if (!User) return res.redirect("/login");
+    if (!User) return res.redirect("/landing");
     const locationVisited = User.PlacesVisited.find(location => location.city === city && location.country === country)
     const locationFound = !!locationVisited;
 
@@ -287,6 +323,7 @@ app.get("/api/things-to-do", async (req, res) => {
     }
 })
 
+
 app.get("/location", checkLogin ,async (req, res) => {
 
     const {latitude, longitude} = req.query
@@ -300,13 +337,13 @@ app.get("/location", checkLogin ,async (req, res) => {
     const [User, nominatimRes] = await Promise.all([
         userModel.userData.findOne({username}),
         fetch(NomURL, {
-            headers: {"User-Agent" : "TravelrApp"}
+            headers: {"User-Agent" : "GlobeJumper"}
         })
     ])
     
     if(!User) {
         console.error("User not found!")
-        return res.redirect("/login")
+        return res.redirect("/landing")
     }
 
     const nominatimData = await nominatimRes.json()
@@ -354,76 +391,147 @@ app.get("/location", checkLogin ,async (req, res) => {
     }
 })
 
-app.post("/add-location", checkLogin, async (req, res) => {
+app.post("/location/upload", checkLogin, async (req, res) => {
+    upload.array("photos", 5)(req, res, async (err) => {
+    const username = req.session.username;
 
-    try {
-    console.log("FORM BODY:", req.body);
-
-        const {
-            city,
-            country,
-            visitDateStart,
-            visitDateEnd,
-            longitude,
-            latitude,
-            countryCode,
-            photos,
-            notes,
-            rating,
-        } = req.body
-    //convert the latitude and longitude from strings in the mongoDB to numbers
-    const lat = Number(latitude)
-    const lng = Number(longitude)
-        
-        const newLoc = {
-            city,
-            country,
-            dateVisited: {
-                startDate: visitDateStart,
-                endDate: visitDateEnd
-            },
-            longitude: lng,
-            latitude: lat,
-            countryCode,
-            photos,
-            notes,
-            rating: Number(rating),
+        if (err) {
+            if (err.code === "LIMIT_FILE_SIZE") {
+                req.session.errorMessage = "The limit of file size is 20MB";
+            } else if (err.message.includes("Incorrect format")) {
+                req.session.errorMessage = err.message;
+            } else {
+                req.session.errorMessage = "Image upload failed.";
+            }
         }
+        try {
+            const username = req.session.username
+            const latitude = Number(req.body.latitude)
+            const longitude = Number(req.body.longitude)
+            if(!req.files || req.files.length === 0) {
+                req.session.errorMessage = "Please Select at least one image"
+                return res.redirect(`/location?latitude=${latitude}&longitude=${longitude}`)
+            }
 
-        const User = await userModel.userData.findOne({username: req.session.username})
-                if (!User) {
-            console.error("User not found!");
-            return res.redirect("/login");
+            const images = req.files.map(file => 
+                `/uploads/locations/${file.filename}`
+            )
+            const result = await userModel.userData.updateOne(
+                {
+                    username: username,
+                    "PlacesVisited.latitude": latitude,
+                    "PlacesVisited.longitude": longitude
+                },
+                {
+                    $push: {
+                        "PlacesVisited.$.photos": {$each: images}
+                    }
+                }
+            );
+            res.redirect(`/location?latitude=${latitude}&longitude=${longitude}`)
+        }catch(e) {
+            console.log("Upload error: ", e)
+            req.session.errorMessage = "Could not upload photos";
+            res.redirect(`/location?latitude=${req.body.latitude}&longitude=${req.body.longitude}`)
         }
-        User.PlacesVisited.push(newLoc)
-        await User.save()
-        inWishlist = User.wishList.some(location => location.city === city && location.country === country);
-
-        res.redirect('/history')
-    } catch (e) {
-
-        let inWishlist = false;
-        let locationFound = false;
-        if (User) {
-            inWishlist = User.wishList.some(loc => loc.city === city && loc.country === country);
-            locationFound = User.PlacesVisited.some(loc => loc.city === city && loc.country === country);
-        }
-            console.error("Error saving user:", e);
-        res.render('pages/location', {
-            errorMessage: req.session.errorMessage = "Could not save Location",
-            username: req.session.username,
-            Loggedin: checkLoggedin(req),
-            title: req.body.country,
-            latitude: req.body.latitude,
-            longitude: req.body.longitude,
-            city: req.body.city || "",
-            country: req.body.country,
-            countryCode: req.body.countryCode,
-            inWishlist: inWishlist,
-            locationFound: locationFound,
-        })
-    }
+    });
 })
+
+app.post("/add-location", checkLogin, (req, res) => {
+    //chatGPT assistance on how to get error messages for multer
+    upload.array("photos", 5)(req, res, async (err) => {
+        const username = req.session.username;
+
+        if (err) {
+            if (err.code === "LIMIT_FILE_SIZE") {
+                req.session.errorMessage = "The limit of file size is 20MB";
+            } else if (err.message.includes("Incorrect format")) {
+                req.session.errorMessage = err.message;
+            } else {
+                req.session.errorMessage = "Image upload failed.";
+            }
+        }
+
+        try {
+            const User = await userModel.userData.findOne({ username });
+
+            if (!User) {
+                console.error("User not found!");
+                return res.redirect("/landing");
+            }
+
+            const {
+                city,
+                country,
+                visitDateStart,
+                visitDateEnd,
+                longitude,
+                latitude,
+                countryCode,
+                notes,
+                rating,
+            } = req.body;
+
+            const lat = Number(latitude);
+            const lng = Number(longitude);
+
+            const images = req.files
+                ? req.files.map(f => `/uploads/locations/${f.filename}`)
+                : [];
+
+            const newLoc = {
+                city,
+                country,
+                dateVisited: {
+                    startDate: visitDateStart,
+                    endDate: visitDateEnd,
+                },
+                longitude: lng,
+                latitude: lat,
+                countryCode,
+                photos: images,
+                notes,
+                rating: Number(rating),
+            };
+
+            User.PlacesVisited.push(newLoc);
+            await User.save();
+
+            res.redirect("/history");
+        } catch (e) {
+            console.error("Error saving user:", e);
+
+            let inWishlist = false;
+            let locationFound = false;
+
+            if (User) {
+                inWishlist = User.wishList.some(
+                    loc => loc.city === req.body.city && loc.country === req.body.country
+                );
+                locationFound = User.PlacesVisited.some(
+                    loc => loc.city === req.body.city && loc.country === req.body.country
+                );
+            }
+
+            req.session.errorMessage = "Could not save Location";
+
+            res.render("pages/location", {
+                errorMessage: req.session.errorMessage,
+                username,
+                Loggedin: checkLoggedin(req),
+                title: req.body.country,
+                latitude: req.body.latitude,
+                longitude: req.body.longitude,
+                city: req.body.city || "",
+                country: req.body.country,
+                countryCode: req.body.countryCode,
+                inWishlist,
+                locationFound,
+            });
+        }
+    });
+});
+
 app.post("/delete-location", checkLogin, async (req, res) => {
     username = req.session.username
     const {city, country} = req.body
@@ -483,9 +591,10 @@ app.post("/login", async (req, res) => {
     const validUser = await userModel.checkUser(req.body.username, req.body.password)
 
     if(!validUser) {
+        req.session.errorMessage = "Incorrect password, please try again!"
         return res.render('pages/login', {
             title: "Login",
-            errorMessage: req.session.errorMessage = "Incorrect password, please try again!",
+            errorMessage: req.session.errorMessage,
         })
     }
 
@@ -500,12 +609,23 @@ app.get("/register", (req, res) => {
 })
 
 app.post("/register", async (req, res) => {
-    if(await userModel.addUser(req.body.username, req.body.password, req.body.firstName, req.body.lastName)) {
+    const {username, password, firstName, lastName} = req.body
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
+    if(!passwordRegex.test(password)) {
+        req.session.errorMessage = "Password must match the rules. press the information icon to check the rules"
+        return res.render('pages/register', {
+            errorMessage: req.session.errorMessage
+        })
+    }
+
+    if(await userModel.addUser(username, password, firstName, lastName)) {
         req.session.username = req.body.username
         res.redirect("/home")
     } else {
+        req.session.errorMessage ="Username is already in use!"
         res.render('pages/login', {
-            errorMessage: req.session.errorMessage ="Username is already in use!",
+            errorMessage: req.session.errorMessage,
             title: "Login",
         })
     }
@@ -513,8 +633,9 @@ app.post("/register", async (req, res) => {
 app.post('/edit-username', checkLogin ,async (request, response) => {
     let oldUsername = request.session.username
     const {newUsername} = request.body
-
-    if(await userModel.checkUsername(newUsername)) {
+    if(newUsername === oldUsername) {
+        return response.json({success: true, message: "Username was not changed!"})
+    } else if(await userModel.checkUsername(newUsername)) {
         return response.json({ success: false, error: "Username already exists" });
     }
     await userModel.userData.findOneAndUpdate(
@@ -532,13 +653,23 @@ app.post('/edit-password', async (request, response) => {
     let CurrentUsername = request.session.username
     const {newPassword} = request.body
 
-    await userModel.userData.findOneAndUpdate(
-        {username: CurrentUsername},
-        {password: newPassword},
-        {new: true}
-    );
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
+    if(!passwordRegex.test(newPassword)) {
+        return res.render('pages/account', {
+            errorMessage: "Password must match the rules. press the information icon to check the rules"
+        })
+    }
+    if(passwordRegex.test(newPassword)) {
+        await userModel.userData.findOneAndUpdate(
+            {username: CurrentUsername},
+            {password: newPassword},
+            {new: true}
+        );
 
-    return response.json({ success: true });
+
+        return response.json({ success: true });
+    }
+
 })
 
 app.post('/edit-firstname', async (request, response) => {
@@ -570,7 +701,20 @@ app.post('/edit-lastname', async (request, response) => {
 
 })
 
+app.get('/user-deleted', (req, res) => {
+    res.render('pages/userDeleted', {
+        title: "Goodbye"
+    })
+})
+
+app.post('/delete-user', checkLogin, async (req, res) => {
+    let User = await userModel.userData.findOne({username: req.body.username})
+
+    await userModel.deleteUser(User.username)
+    res.redirect('/user-deleted')
+})
+
 app.get("/logout", checkLogin, (req, res) => {
     req.session.destroy();
-    res.redirect("/login")
+    res.redirect("/landing")
 });

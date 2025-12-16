@@ -12,7 +12,7 @@ const PlacesVisitedSchema = new Schema({
     longitude: {type: Number, required: true},
     latitude: {type: Number, required: true},
     countryCode: {type: String, required: true},
-    photos: {type: String},
+    photos: [{type: String}],
     notes: {type: String},
     rating: {type: Number, min: 1, max: 5},
 })
@@ -68,6 +68,10 @@ async function checkUser(username, password) {
     }
 }
 
+async function deleteUser(username) {
+    return await userData.deleteOne({username: username}).exec()
+}
+
 async function checkUsername(username) {
     let userExists = null;
 
@@ -83,5 +87,6 @@ module.exports = {
     addUser,
     checkUser,
     checkUsername,
+    deleteUser,
     userData
 }

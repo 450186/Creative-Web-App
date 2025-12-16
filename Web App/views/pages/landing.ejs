@@ -1,0 +1,86 @@
+<%- include('../partials/header') %>
+
+<h3 style="text-align: center; font-weight: bold;">Discover, Track, Remember</h3>
+<div id="landing-list-div">
+    <ul id="landing-list">
+        <li>Add your dream destinations!</li>
+        <li>Record those Special trips!</li>
+        <li>Save those Holiday Snaps somewhere safe!</li>
+        <li>Revisit the good times!</li>
+        <li>Get Hotspots for most locations!</li>
+    </ul>
+</div>
+
+<div id="instructions-div">
+    <h2 style="text-align: center; margin: 10px; ">How to Use</h2>
+
+    <div class="slideshow-container">
+        <div class="slides">
+            <h2>Create an Account!</h2>
+            <p>All we require is your first name and last name!</p>
+            <p>Don't worry about thinking up the perfect username on the spot! You can always edit it later!</p>
+            <p>Once you're in, the "&#8801;" icon is your best friend for navigating the app!</p>
+        </div>
+        <div class="slides">
+            <h2>Go Exploring!</h2>
+            <p>Just click on a location on the map!</p>
+            <p>Alternatively You can search for the city! Just make sure your spelling is up to scratch!</p>
+        </div>
+        <div class="slides">
+            <h2>View the location!</h2>
+            <p>Get a list of things to do!</p>
+            <p>Add to your Wishlist!</p>
+            <p>If you've been there you can add your information including photos, when you went, your thoughts on it and your final rating</p>
+        </div>
+        <div class="slides">
+            <h2>Navigating the website</h2>
+            <p>Go through your history!</p>
+            <p>Go through your wishlist!</p>
+            <p>Change your account details!</p>
+        </div>
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+    <br>
+    <div style="text-align: center;">
+        <span class="dot" onclick="currentSlide(1)"></span>
+        <span class="dot" onclick="currentSlide(2)"></span>
+        <span class="dot" onclick="currentSlide(3)"></span>
+        <span class="dot" onclick="currentSlide(4)"></span>
+    </div>
+</div>
+
+<div style="text-align: center;">
+    <button onclick="window.location.href='login'" id="login-butt" name="login">Login</button>
+    <button onclick="window.location.href='register'" id="register-butt" name="register">Start your Journey!</button>
+</div>
+
+<script>
+    let slideIndex = 1;
+    showSlides(slideIndex);
+
+    function plusSlides(n) {
+        showSlides(slideIndex +=n)
+    }
+    function currentSlide(n) {
+        showSlides(slideIndex = n)
+    }
+    function showSlides(n) {
+        let i;
+        let slides = document.getElementsByClassName("slides");
+        let dots = document.getElementsByClassName("dot");
+        if (n > slides.length) {slideIndex = 1}
+        if (n < 1) {slideIndex = slides.length}
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[slideIndex-1].style.display = "block";
+        dots[slideIndex-1].className += " active";
+    }
+</script>
+
+
+<%- include('../partials/footer') %>

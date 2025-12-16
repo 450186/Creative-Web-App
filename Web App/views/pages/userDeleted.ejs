@@ -1,0 +1,19 @@
+<%- include('../partials/header') %>
+    <h1 id="sorry" style="text-align: center;">We're sorry to see you go!</h1>
+    <h2 style="text-align: center;">You will now be redirected back to the Welcome page in <span id="count">5</span> seconds</h2>
+    <script>
+        let timeRemaining = 5;
+        let counter = document.getElementById('count')
+//every second, update the timer
+        let countdown = setInterval(() => {
+            timeRemaining--;
+            counter.textContent = timeRemaining
+
+            if(timeRemaining <= 0) {
+                clearInterval(countdown);
+                window.location.href = '/landing'
+            }
+        }, 1000)
+
+    </script>
+<%- include('../partials/footer') %>
