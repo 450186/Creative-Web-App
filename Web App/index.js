@@ -32,10 +32,11 @@ const mongoDBusername = process.env.mongoDBusername;
 const mongoDBpassword = process.env.mongoDBpassword;
 const mongoAppName = process.env.mongoAppName;
 const GeoAPIKey = process.env.GeoAPIKey;
+const sessionSecret = process.env.sessionSecret
 
 
 app.use(session({
-    secret: "SecretKeyForSession",
+    secret: sessionSecret,
     saveUninitialized: true,
     cookie: { maxAge: fiveMin},
     resave: false,
