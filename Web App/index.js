@@ -38,7 +38,10 @@ const sessionSecret = process.env.sessionSecret
 app.use(session({
     secret: sessionSecret,
     saveUninitialized: true,
-    cookie: { maxAge: fiveMin},
+    cookie: { 
+        maxAge: fiveMin,
+        secure: false
+    },
     resave: false,
 }))
 
