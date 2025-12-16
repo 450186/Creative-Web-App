@@ -59,7 +59,7 @@
             <option value="5">5⭐️</option>
         </select><br>
 
-        <input style="margin-top: 10px;" type="submit" value="Add to History">
+        <input id="submit-butt" style="margin-top: 10px;" type="submit" value="Add to History">
     </form>
 <% } %>
 <% if (locationFound) { %>
@@ -230,8 +230,16 @@
         let locationForm = document.getElementById("location-form")
         let overlay = document.getElementById("modal-overlay")
         const wishlistForm = document.getElementById("wishlist-form")
+        let submitButt = document.getElementById("submit-butt")
         const star = document.getElementById("star")
 
+        if(locationForm && submitButt) {
+            locationForm.addEventListener("submit", () => {
+                submitButt.disabled = true;
+                submitButt.value = "Uploading..."
+            })
+        }
+        
         if(star && wishlistForm) {
             star.addEventListener("click", () => {
                 wishlistForm.submit()

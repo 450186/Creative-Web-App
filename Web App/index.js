@@ -72,14 +72,20 @@ const storage = new CloudinaryStorage({
         folder: "globejumper/locations",
         allowed_formats: ["jpg", "jpeg", "png", "webp"],
         transformation: [
-            {width: 1200, height: 1200, crop: "limit"}
+            {
+                width: 1200, 
+                height: 1200, 
+                crop: "limit",
+                quality: "auto",
+                fetch_format: "auto"
+            }
         ]
     }
 })
 
 const upload = multer({
     storage,
-    limits: {fileSize: 20 * 1024 * 1024}
+    limits: {fileSize: 5 * 1024 * 1024}
 })
 
 app.use(express.urlencoded({ extended: false }));
@@ -404,7 +410,7 @@ app.get("/location", checkLogin ,async (req, res) => {
 })
 
 app.post("/location/upload", checkLogin, async (req, res) => {
-    upload.array("photos", 5)(req, res, async (err) => {
+    upload.array("photos", 3)(req, res, async (err) => {
     const username = req.session.username;
 
         if (err) {
@@ -426,6 +432,8 @@ app.post("/location/upload", checkLogin, async (req, res) => {
             }
 
             const images = req.files.map(file => file.path )
+            console.log(req.files)
+            
 
             const result = await userModel.userData.updateOne(
                 {
@@ -450,7 +458,7 @@ app.post("/location/upload", checkLogin, async (req, res) => {
 
 app.post("/add-location", checkLogin, (req, res) => {
     //chatGPT assistance on how to get error messages for multer
-    upload.array("photos", 5)(req, res, async (err) => {
+    upload.array("photos", 3)(req, res, async (err) => {
         const username = req.session.username;
 
     if (err) {
@@ -489,7 +497,7 @@ app.post("/add-location", checkLogin, (req, res) => {
             const images = req.files
                 ? req.files.map(f => f.path)
                 : [];
-
+            console.log(req.files)
             const newLoc = {
                 city,
                 country,
@@ -589,16 +597,16 @@ app.get("/login", (req, res) => {
 })
 app.post("/login", async (req, res) => {
     const {username, password} = req.body
-    const isValid = await bcrypt.compare(password, user.password)
-    const userExists = await userModel.checkUsername(req.body.username)
-    const user = await userModel.userData.findOne({username: req.body.username})
 
-    if(!userExists) {
+    const user = await userModel.userData.findOne({username})
+
+    if(!user) {
         return res.render('pages/login', {
             title: "Login",
             errorMessage: req.session.errorMessage = "This user does not exist!",
         })
     }
+    const isValid = await bcrypt.compare(password, user.password)
 
     if(!isValid) {
         req.session.errorMessage = "Incorrect password, please try again!"
