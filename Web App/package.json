@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^1.41.0",
     "cookie-parser": "^1.4.7",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
@@ -9,6 +11,7 @@
     "mongodb": "^7.0.0",
     "mongoose": "^8.19.3",
     "multer": "^2.0.2",
+    "multer-storage-cloudinary": "^4.0.0",
     "nodemon": "^3.1.10"
   },
   "scripts": {

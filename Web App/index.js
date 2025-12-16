@@ -12,9 +12,18 @@ const userModel = require("./models/users.js")
 
 const session = require("express-session");
 const dayjs = require("dayjs")
+const bcrypt = require("bcrypt")
 
 const dotenv = require("dotenv").config();
 
+const cloudinary = require("cloudinary").v2
+const {CloudinaryStorage} = require("multer-storage-cloudinary")
+
+cloudinary.config({
+    cloud_name: process.env.CloudName,
+    api_key: process.env.CloudAPIkey,
+    api_secret: process.env.CloudSecret
+})
 
 const fiveMin = 5 * 60 * 1000;
 const OneHour = 1 * 60 * 60 * 1000;
@@ -23,6 +32,7 @@ const mongoDBusername = process.env.mongoDBusername;
 const mongoDBpassword = process.env.mongoDBpassword;
 const mongoAppName = process.env.mongoAppName;
 const GeoAPIKey = process.env.GeoAPIKey;
+
 
 app.use(session({
     secret: "SecretKeyForSession",
@@ -43,30 +53,32 @@ mongoose.connect(connectionString)
 app.set('view engine', 'ejs')
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, "uploads")))
 
 const multer = require("multer")
 
-const photoStorage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, path.join(__dirname, "uploads", "locations"));
-    },
-    filename: function(req, file, cb) {
-        const UniqueName = Date.now() + "-" + Math.round(Math.random() * 1E8)
-        cb(null, UniqueName + path.extname(file.originalname))
+// const photoStorage = multer.diskStorage({
+//     destination: function(req, file, cb) {
+//         cb(null, path.join(__dirname, "uploads", "locations"));
+//     },
+//     filename: function(req, file, cb) {
+//         const UniqueName = Date.now() + "-" + Math.round(Math.random() * 1E8)
+//         cb(null, UniqueName + path.extname(file.originalname))
+//     }
+// })
+
+const storage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: "globejumper/locations",
+        allowed_formats: ["jpg", "jpeg", "png", "webp"],
+        transformation: [
+            {width: 1200, height: 1200, crop: "limit"}
+        ]
     }
 })
-function fileFilter (req, file, cb) {
-    const accepted = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']
-    if(accepted.includes(file.mimetype)) {
-        cb(null, true)
-    } else {
-        cb(new Error("Incorrect format! Only JPEG, JPG, PNG, or WEBP accepted"))
-    }
-}
+
 const upload = multer({
-    storage: photoStorage, 
-    fileFilter,
+    storage,
     limits: {fileSize: 20 * 1024 * 1024}
 })
 
@@ -398,12 +410,12 @@ app.post("/location/upload", checkLogin, async (req, res) => {
         if (err) {
             if (err.code === "LIMIT_FILE_SIZE") {
                 req.session.errorMessage = "The limit of file size is 20MB";
-            } else if (err.message.includes("Incorrect format")) {
-                req.session.errorMessage = err.message;
             } else {
                 req.session.errorMessage = "Image upload failed.";
             }
+            return res.redirect(`/location?latitude=${req.body.latitude}&longitude=${req.body.longitude}`);
         }
+
         try {
             const username = req.session.username
             const latitude = Number(req.body.latitude)
@@ -413,9 +425,8 @@ app.post("/location/upload", checkLogin, async (req, res) => {
                 return res.redirect(`/location?latitude=${latitude}&longitude=${longitude}`)
             }
 
-            const images = req.files.map(file => 
-                `/uploads/locations/${file.filename}`
-            )
+            const images = req.files.map(file => file.path )
+
             const result = await userModel.userData.updateOne(
                 {
                     username: username,
@@ -442,15 +453,15 @@ app.post("/add-location", checkLogin, (req, res) => {
     upload.array("photos", 5)(req, res, async (err) => {
         const username = req.session.username;
 
-        if (err) {
-            if (err.code === "LIMIT_FILE_SIZE") {
-                req.session.errorMessage = "The limit of file size is 20MB";
-            } else if (err.message.includes("Incorrect format")) {
-                req.session.errorMessage = err.message;
-            } else {
-                req.session.errorMessage = "Image upload failed.";
-            }
+    if (err) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+            req.session.errorMessage = "The limit of file size is 20MB";
+        } else {
+            req.session.errorMessage = "Image upload failed.";
         }
+        return res.redirect(`/location?latitude=${req.body.latitude}&longitude=${req.body.longitude}`);
+    }
+
 
         try {
             const User = await userModel.userData.findOne({ username });
@@ -476,7 +487,7 @@ app.post("/add-location", checkLogin, (req, res) => {
             const lng = Number(longitude);
 
             const images = req.files
-                ? req.files.map(f => `/uploads/locations/${f.filename}`)
+                ? req.files.map(f => f.path)
                 : [];
 
             const newLoc = {
@@ -566,8 +577,6 @@ app.get("/account", checkLogin, async (req, res) => {
         title: "Profile",
         firstName: User.firstName,
         lastName: User.lastName,
-        password: User.password,
-        passwordMask: "*".repeat(passwordlength),
     })
 
 })
@@ -579,8 +588,10 @@ app.get("/login", (req, res) => {
     })
 })
 app.post("/login", async (req, res) => {
-
+    const {username, password} = req.body
+    const isValid = await bcrypt.compare(password, user.password)
     const userExists = await userModel.checkUsername(req.body.username)
+    const user = await userModel.userData.findOne({username: req.body.username})
 
     if(!userExists) {
         return res.render('pages/login', {
@@ -588,9 +599,8 @@ app.post("/login", async (req, res) => {
             errorMessage: req.session.errorMessage = "This user does not exist!",
         })
     }
-    const validUser = await userModel.checkUser(req.body.username, req.body.password)
 
-    if(!validUser) {
+    if(!isValid) {
         req.session.errorMessage = "Incorrect password, please try again!"
         return res.render('pages/login', {
             title: "Login",
@@ -610,6 +620,7 @@ app.get("/register", (req, res) => {
 
 app.post("/register", async (req, res) => {
     const {username, password, firstName, lastName} = req.body
+    const hashed = await bcrypt.hash(password, 10)
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
     if(!passwordRegex.test(password)) {
@@ -619,7 +630,7 @@ app.post("/register", async (req, res) => {
         })
     }
 
-    if(await userModel.addUser(username, password, firstName, lastName)) {
+    if(await userModel.addUser(username, hashed, firstName, lastName)) {
         req.session.username = req.body.username
         res.redirect("/home")
     } else {
@@ -647,29 +658,6 @@ app.post('/edit-username', checkLogin ,async (request, response) => {
     request.session.username = newUsername;
 
     return response.json({ success: true });
-})
-
-app.post('/edit-password', async (request, response) => {
-    let CurrentUsername = request.session.username
-    const {newPassword} = request.body
-
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
-    if(!passwordRegex.test(newPassword)) {
-        return res.render('pages/account', {
-            errorMessage: "Password must match the rules. press the information icon to check the rules"
-        })
-    }
-    if(passwordRegex.test(newPassword)) {
-        await userModel.userData.findOneAndUpdate(
-            {username: CurrentUsername},
-            {password: newPassword},
-            {new: true}
-        );
-
-
-        return response.json({ success: true });
-    }
-
 })
 
 app.post('/edit-firstname', async (request, response) => {

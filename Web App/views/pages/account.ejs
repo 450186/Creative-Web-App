@@ -7,11 +7,6 @@
             <input type="button" style="margin-top: 0;" id="username-button" name="Edit" value="Edit"><br>
         </div>
         <div class="account-row">
-            <label data-real-password="<%= password %>" id="password-field">Password: <%= passwordMask %> </label>
-            <i id="show-button" class="fa-solid fa-eye"></i>
-            <input type="button" style="margin-top: 0;" id="password-button" name="Edit" value="Edit"><br>
-        </div>
-        <div class="account-row">
             <label id="firstname-field">First name: <%= firstName %> </label>
             <input type="button" style="margin-top: 0;" id="firstname-button" name="Edit" value="Edit"><br>
         </div>
@@ -62,44 +57,11 @@
                     <li>Must include 1 special character</li>
                 </ul>
             </div>
-            <script>
-                let info = document.getElementById("info-icon")
-                let closebtn = document.getElementById("closebtn")
-                let passwordDiv = document.getElementById("password-rules-div")
-
-                function togglePassRules() {
-                    if(passwordDiv.classList.contains("show")) {
-                        passwordDiv.classList.remove("show")
-                    } else {
-                        passwordDiv.classList.add("show")
-                    }
-                }
-                info.addEventListener("click", togglePassRules)
-                closebtn.addEventListener("click", togglePassRules)
-            </script>
 
         <script defer>
             document.getElementById("username-button").addEventListener("click", usernameEdit)
             document.getElementById("firstname-button").addEventListener("click", firstnameEdit)
             document.getElementById("lastname-button").addEventListener("click", lastnameEdit)
-            document.getElementById("password-button").addEventListener("click", passwordEdit)
-            let passwordField = document.getElementById("password-field")
-            let eye = document.getElementById("show-button")
-            eye.addEventListener("click", togglePasswordVisibility)
-
-            function togglePasswordVisibility() {
-                if(eye.classList.contains("fa-eye")) {
-                    eye.style.color = "red"
-                    eye.classList.remove("fa-eye")
-                    eye.classList.add("fa-eye-slash")
-                    passwordField.textContent = "Password: <%= password %>"
-                } else {
-                    eye.style.color = "#16CC21"
-                    eye.classList.remove("fa-eye-slash")
-                    eye.classList.add("fa-eye")
-                    passwordField.textContent = "Password: <%= passwordMask %>"
-                }
-            }
 
             function usernameEdit() {
                 let field = document.getElementById("user-field")
@@ -120,40 +82,6 @@
                         },
                         body: JSON.stringify({
                             newUsername: input.value.trim()
-                        })
-                    })
-
-                    const data = await response.json()
-                    if(data.success) {
-                        location.reload()
-                    } else {
-                        alert(data.error)
-                    }
-                })
-            }
-                function passwordEdit() {
-                let field = document.getElementById("password-field")
-                let input = document.createElement("input")
-                let passButt = document.getElementById("password-button")
-                let realPassword = field.dataset.realPassword
-                eye.style.display = "none"
-                input.type = "text"
-                input.value = realPassword
-                input.classList.add("label")
-                togglePassRules()
-                passButt.value = "Done"
-                passButt.type = "button"
-                field.replaceWith(input)
-                passButt.addEventListener("click", async (e) => {
-                    e.preventDefault()
-                    let response = await fetch('/edit-password', {
-                        method: "POST",
-                        headers: {
-                            "Content-Type" : 'application/json'
-                        },
-                        body: JSON.stringify({
-
-                            newPassword: input.value.trim()
                         })
                     })
 

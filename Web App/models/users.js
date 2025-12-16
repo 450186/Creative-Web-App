@@ -56,18 +56,6 @@ async function addUser(username, password, firstName, lastName) {
     }
 }
 
-async function checkUser(username, password) {
-    let userExists = null;
-
-    userExists = await userData.findOne({username: username}).exec();
-
-    if(userExists) {
-        return userExists.password === password
-    } else {
-        return false;
-    }
-}
-
 async function deleteUser(username) {
     return await userData.deleteOne({username: username}).exec()
 }
@@ -85,7 +73,6 @@ async function checkUsername(username) {
 }
 module.exports = {
     addUser,
-    checkUser,
     checkUsername,
     deleteUser,
     userData
