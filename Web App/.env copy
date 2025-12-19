@@ -1,0 +1,10 @@
+mongoDBusername = jacksimcox_db_user
+mongoDBpassword = Liam2003
+mongoAppName = creative-web-app
+sessionSecret = SecretKeyForSession
+
+GeoAPIKey = 82c49204694d4da5a6e21b774cf4986c
+
+CloudName = dwyphwmgq
+CloudAPIkey = 327726167621754
+CloudSecret = 7OXPXePrG-WX4hXEotnhgOUcss0
