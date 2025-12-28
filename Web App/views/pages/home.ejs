@@ -65,6 +65,9 @@
 
 <script>
 
+    let isAiming = false;     // finger/mouse is dragging
+    let didThrow = false;     // we actually threw a dart (not just a tap)
+
     var map = L.map('map').setView([20, 0], 2);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -81,7 +84,11 @@
     })
     .catch(err => console.error("Error loading GeoJSON data:", err));
 
+    let ignoreClicksUntil = 0;
+
     map.on("click", function (click) {
+        if (isAiming || dartInFlight) return;
+        if(Date.now() < ignoreClicksUntil) return;
 
         if(!WorldGeo) {
             errorMessage.innerText = "GeoJSON data not loaded yet. Please try again in a moment.";
@@ -208,6 +215,227 @@
     updateGolds()
     greenCheck.addEventListener("change", updateGreens)
     goldCheck.addEventListener("change", updateGolds)
+
+    const DartIcon = L.icon({
+    iconUrl: "/assets/dart-icon.png",
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    });
+
+    function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function degToRad(d) { return (d * Math.PI) / 180; }
+function radToDeg(r) { return (r * 180) / Math.PI; }
+
+// Destination point given start latlng, bearing degrees, distance meters
+function destinationLatLng(start, bearingDeg, distanceM) {
+  const R = 6371000; // earth radius meters
+  const brng = degToRad(bearingDeg);
+
+  const lat1 = degToRad(start.lat);
+  const lon1 = degToRad(start.lng);
+
+  const lat2 = Math.asin(
+    Math.sin(lat1) * Math.cos(distanceM / R) +
+    Math.cos(lat1) * Math.sin(distanceM / R) * Math.cos(brng)
+  );
+
+  const lon2 = lon1 + Math.atan2(
+    Math.sin(brng) * Math.sin(distanceM / R) * Math.cos(lat1),
+    Math.cos(distanceM / R) - Math.sin(lat1) * Math.sin(lat2)
+  );
+
+  let lng = ((radToDeg(lon2) + 540) % 360) - 180;
+  return L.latLng(radToDeg(lat2), lng);
+}
+
+// Add a bit of randomness so darts don’t always land perfectly on the vector
+function jitterBearingAndDistance(bearingDeg, distanceM) {
+  const cone = clamp(distanceM / 15000, 5, 25); // degrees
+  const bearingJitter = (Math.random() * 2 - 1) * cone;
+  const distJitter = distanceM * (0.85 + Math.random() * 0.30);
+  return { bearingDeg: bearingDeg + bearingJitter, distanceM: distJitter };
+}
+
+
+    // --- LAND CHECK helper (reuses your WorldGeo + leafletPip) ---
+function isOnLand(latlng) {
+  if (!WorldGeo) return true; // fail open while loading
+  const point = [latlng.lng, latlng.lat];
+  const geo = leafletPip.pointInLayer(point, WorldGeo);
+  return geo.length > 0;
+}
+
+// Try to find a land endpoint by shrinking distance along same bearing
+function findLandEnd(start, bearingDeg, distanceM) {
+  let dist = distanceM;
+
+  for (let i = 0; i < 8; i++) {
+    const { bearingDeg: b2, distanceM: d2 } = jitterBearingAndDistance(bearingDeg, dist);
+    const candidate = destinationLatLng(start, b2, d2);
+
+    if (isOnLand(candidate)) return candidate;
+
+    dist *= 0.75; // shrink and retry
+  }
+
+  // if all else fails, just return the last candidate-ish
+  return destinationLatLng(start, bearingDeg, distanceM * 0.3);
+}
+
+// --- Hammer setup ---
+const mapEl = document.getElementById("map");
+
+// Use Manager so we can tune recognizers cleanly
+const hammer = new Hammer.Manager(mapEl);
+hammer.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 5 }));
+
+// Prevent browser gestures
+mapEl.style.touchAction = "none";
+
+let dartMarker = null;
+let dartInFlight = false;
+
+let startPt = null;
+let lastPt = null;
+
+function disableMapInteractions() {
+  map.dragging.disable();
+  map.touchZoom.disable();
+  map.doubleClickZoom.disable();
+  map.scrollWheelZoom.disable();
+  map.boxZoom.disable();
+  map.keyboard.disable();
+  if (map.tap) map.tap.disable();
+}
+
+function enableMapInteractions() {
+  map.dragging.enable();
+  map.touchZoom.enable();
+  map.doubleClickZoom.enable();
+  map.scrollWheelZoom.enable();
+  map.boxZoom.enable();
+  map.keyboard.enable();
+  if (map.tap) map.tap.enable();
+}
+
+function metersPerPixel(lat) {
+  // meters per pixel at given latitude and current zoom
+  const zoom = map.getZoom();
+  const earthCircumference = 40075016.686; // meters
+  return (earthCircumference * Math.cos(lat * Math.PI / 180)) / Math.pow(2, zoom + 8);
+}
+
+
+hammer.on("panstart", (e) => {
+    isAiming = true;
+    didThrow = false;
+  ignoreClicksUntil = Date.now() + 600;
+
+  if (dartInFlight) return;
+
+  disableMapInteractions();
+
+  startPt = { x: e.center.x, y: e.center.y };
+  lastPt = startPt;
+});
+
+hammer.on("panmove", (e) => {
+  if (!startPt) return;
+  lastPt = { x: e.center.x, y: e.center.y };
+
+  // optional: draw an aim line here (later)
+});
+
+hammer.on("panend pancancel", (e) => {
+  ignoreClicksUntil = Date.now() + 600;
+
+  if (dartInFlight || !startPt || !lastPt) {
+    startPt = null;
+    lastPt = null;
+    isAiming = false;
+    enableMapInteractions();
+    return;
+  }
+
+  const dx = lastPt.x - startPt.x;
+  const dy = lastPt.y - startPt.y;
+  const distPx = Math.hypot(dx, dy);
+
+  // ignore tiny drags
+  if (distPx < 35) {
+    startPt = null;
+    lastPt = null;
+    isAiming = false;
+    enableMapInteractions();
+    return;
+  }
+
+  didThrow = true;
+
+  // start from finger start point
+  const startLatLng = containerPointToLatLngFromScreenPoint(startPt);
+
+  // bearing (0=north)
+  const angleRad = Math.atan2(dy, dx);
+  let bearing = (90 - (angleRad * 180 / Math.PI));
+  bearing = (bearing + 360) % 360;
+
+  // zoom-scaled distance
+  const mpp = metersPerPixel(startLatLng.lat);
+  const multiplier = 900; // tune 600-1200
+  let distanceM = distPx * mpp * multiplier;
+  distanceM = clamp(distanceM, 50000, 3000000); // 50km - 3000km
+
+  console.log("distPx:", distPx, "mpp:", mpp.toFixed(2), "distanceM:", Math.round(distanceM));
+
+  const endLatLng = findLandEnd(startLatLng, bearing, distanceM);
+  throwDart(startLatLng, endLatLng);
+
+  startPt = null;
+  lastPt = null;
+  isAiming = false;
+  enableMapInteractions();
+});
+
+
+// helper for container-point conversion if you use option 2
+function containerPointToLatLngFromScreenPoint(pt) {
+  const rect = mapEl.getBoundingClientRect();
+  const x = pt.x - rect.left;
+  const y = pt.y - rect.top;
+  return map.containerPointToLatLng([x, y]);
+}
+
+// --- Dart throw animation ---
+function throwDart(start, end) {
+  dartInFlight = true;
+  ignoreClicksUntil = Date.now() + 2000;
+
+  if (!dartMarker) {
+    dartMarker = L.marker(start, { icon: DartIcon, zIndexOffset: 2000 }).addTo(map);
+  } else {
+    dartMarker.setLatLng(start);
+  }
+
+  // (optional) keep view reasonable — DON'T fitBounds huge distances
+  // Instead: pan a bit toward the end if it's off-screen
+  if (!map.getBounds().pad(-0.15).contains(end)) {
+    map.panTo(end, { animate: true, duration: 0.4 });
+  }
+
+  const durationMs = 700;
+  dartMarker.slideTo(end, { duration: durationMs });
+
+  dartMarker.once("moveend", () => {
+    dartInFlight = false;
+    window.location.href = `/location?latitude=${end.lat}&longitude=${end.lng}`;
+  });
+}
+
+
 </script>
 
 <%- include("../partials/footer") %>
