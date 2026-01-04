@@ -344,7 +344,7 @@ textarea {
     text-align: center;
 }
 /* History Page */
-#history-container, #foundLoc-form {
+#history-container, #foundLoc-form, #wishlist-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -424,6 +424,43 @@ textarea {
     z-index: 1500;
     padding: 20px;
     position: fixed;
+}
+#preferences-form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-flow: column;
+    width: 50%;
+    margin: auto;
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow);
+    color: var(--text);
+    text-align: center;
+    border-radius: 50px;
+    z-index: 1500;
+    padding: 20px;
+}
+input[name="holidayType"] {
+    margin: 10px;
+}
+#preferences-form input[type="range"] {
+    width: 50%;
+    margin: auto;
+}
+.pref-form-row {
+    display: grid;
+    grid-template-columns: 0.5fr 0.5fr;
+    align-items: center;
+    width: 60%;
+    margin: auto;
+    gap: 10px;
+}
+.pref-form-row label {
+    text-align: middle;
+    line-height: 1;
+    margin: 10px;
+}
+.pref-form-row input {
+    justify-self: middle;
 }
 #location-form h2, #password-rules-div h2, #upload-more h2 {
     display: flex;
@@ -568,14 +605,31 @@ textarea {
     text-align: center;
     width: 80%;
 }
+#map-wrap {
+    position: relative;
+    width: 60%;
+    margin-left: auto;
+    margin-right: 10px;
+}
+.map-fab {
+    position: absolute;
+    right: 25px;
+    bottom: 25px;
+    z-index: 1000;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: var(--accent-warm);
+    color: var(--text-secondary);
+}
 #map {
     height: 500px;
-    width: 60%;
-    margin-right: 10px;
+    width: 100%;
     border-radius: 50px;
     margin-left: auto;
     cursor: crosshair !important;
 }
+
 /* Map Key styling */
 
 #key-div {
@@ -661,6 +715,10 @@ textarea {
     margin: auto;
     font-weight: bold;
     margin: 10px;
+}
+
+#toggle-dart {
+    cursor: pointer;
 }
 
 /* Leaflet popup */
@@ -786,4 +844,28 @@ textarea {
     max-width: 80%;
     max-height: 90%;
     border-radius: 6px;
+}
+#sort-form {
+    text-align: center;
+    margin-bottom: 10px;
+}
+#sort-wrapper {
+    margin-bottom: 20px;
+}
+#sort-select {
+    cursor: pointer;
+    width: fit-content;
+    padding: 8px 16px;
+    border-radius: 5px;
+    color: var(--text);
+    background-color: var(--accent-warm);
+    text-align: center;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+#sort-select:hover {
+    box-shadow: var(--shadow);
+    background-color: var(--accent-warm-dark);
 }

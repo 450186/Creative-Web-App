@@ -1,0 +1,74 @@
+<%- include('../partials/header.ejs') %>
+<div class="where-to-container">
+    <p style="text-align: center;">Set your preferences and let us suggest your next holiday destination!</p>
+    
+    <form id="preferences-form" data-preferences="<%= JSON.stringify(preferences || {}) %>" autocomplete="off">
+        <h3>Holiday Type</h3>
+            <div class="pref-form-row">
+            <label>Beach</label>
+            <input type="checkbox" name="holidayType" value="beach">
+            </div>
+            <div class="pref-form-row">
+            <label>City</label>
+            <input type="checkbox" name="holidayType" value="city">
+            </div>
+            <div class="pref-form-row">
+            <label>Adventure</label>
+            <input type="checkbox" name="holidayType" value="adventure">
+            </div>
+            <div class="pref-form-row">
+            <label>Nature</label>
+            <input type="checkbox" name="holidayType" value="nature">
+            </div>
+        <h3>Budget</h3>
+        <input type="range" id="budget" name="budget" min="1" max="3" value="2">
+        <span id="budget-label"></span>
+
+        <h3>Climate</h3>
+        <div class="pref-form-row">
+        <label>Warm</label>
+        <input type="checkbox" name="climate" value="warm">
+        </div>
+        <div class="pref-form-row">
+        <label>Temperate</label>
+        <input type="checkbox" name="climate" value="temperate">
+        </div>
+        <div class="pref-form-row">
+        <label>Cold</label>
+        <input type="checkbox" name="climate" value="cold">
+        </div>
+        <h3>Pace</h3>
+        <div class="pref-form-row">
+        <label>Slow</label>
+        <input type="radio" name="pace" value="slow">
+        </div>
+        <div class="pref-form-row">
+        <label>Balanced</label>
+        <input type="radio" name="pace" value="balanced">
+        </div>
+        <div class="pref-form-row">
+        <label>Fast</label>
+        <input type="radio" name="pace" value="fast">
+        </div>
+    </form>
+</div>
+<script>
+
+    const form = document.getElementById('preferences-form');
+    const preferences = form.dataset.preferences ? JSON.parse(form.dataset.preferences) : {};
+    const budget = form.querySelector('input[name="budget"]');
+    const budgetLabel = document.getElementById('budget-label');
+
+    budgetLabel.innerText = budgetLabelUpdate(budget.value);
+
+    function budgetLabelUpdate(value) {
+        if (value == 1) return "Low";
+        if (value == 2) return "Medium";
+        if (value == 3) return "High";
+    }
+    budget.addEventListener('change', (e) => {
+        budgetLabel.innerText = budgetLabelUpdate(e.target.value);
+    });
+
+</script>
+<%- include('../partials/footer.ejs') %>

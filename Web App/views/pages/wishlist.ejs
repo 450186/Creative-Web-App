@@ -4,23 +4,26 @@
     <p id="errorMessage">Your Wishlist is Empty</p>
     <p style="text-align: center;"">Visit <a href="home">Home</a> to add locations to your wishlist</p>
 <% } %>
-<% wishList.forEach(item => { %>
-    <div id="location-div">
-        <h2><%= item.country %></h2>
-        <h3><%= item.city %></h3>
-        <form method="GET" action="/location">
-            <script>
-                console.log("Going to /location")
-            </script>
-            <input type="hidden" name="latitude" value="<%= item.latitude %>">
-            <input type="hidden" name="longitude" value="<%= item.longitude %>">
-            <button type="submit">View Location</button>
-        </form>
-        <form method="POST" action="/remove-wishlist" style="display: inline;">
-            <input type="hidden" name="city" value="<%= item.city %>">
-            <input type="hidden" name="country" value="<%= item.country %>">
-            <button type="submit">Remove from Wishlist</button>
-        </form>
-    </div>
-<% }) %>
+
+<div id="wishlist-container">
+    <% wishList.forEach(item => { %>
+        <div class="location-div clickable" data-lat="<%= item.latitude %>" data-long="<%= item.longitude %>">
+            <div class="span2">
+                <h2><%= item.country %></h2>
+                <h3><%= item.city %></h3>
+            </div> 
+        </div>
+    <% }) %>
+</div>
+<script>
+    let locationDivs = document.querySelectorAll(".location-div")
+    locationDivs.forEach(div =>{
+        div.addEventListener("click", () => {
+            const lat = div.dataset.lat;
+            const long = div.dataset.long;
+            window.location.href = `/location?latitude=${lat}&longitude=${long}`
+        })
+    })
+</script>
+
 <%- include("../partials/footer") %>

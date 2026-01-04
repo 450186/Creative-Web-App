@@ -4,26 +4,20 @@
     <p id="errorMessage">No Locations Added</p>
     <p style="text-align: center;"">Visit <a href="home">Home</a> to add locations</p>
 <% } %>
-<!-- <select>
-    <option>
-        Date - Ascending
-    </option>
-    <option>
-        Date - Descending
-    </option>
-    <option>
-        City A-Z - Ascending
-    </option>
-    <option>
-        City A-Z - Descending
-    </option>
-    <option>
-        Rating - Ascending
-    </option>
-    <option>
-        Rating - Descending
-    </option>
-</select> -->
+<form action="/history" method="GET" id="sort-form">
+    <label for="sort">Sort By:</label>
+    <div id="sort-wrapper">
+        <select name="sort" id="sort-select" onchange="this.form.submit()">
+            <option value="date-asc" <%= sort === 'date-asc' ? 'selected' : '' %>>Date - Ascending</option>
+            <option value="date-desc" <%= sort === 'date-desc' ? 'selected' : '' %>>Date - Descending</option>
+            <option value="city-asc" <%= sort === 'city-asc' ? 'selected' : '' %>>City A-Z - Ascending</option>
+            <option value="city-desc" <%= sort === 'city-desc' ? 'selected' : '' %>>City A-Z - Descending</option>
+            <option value="rating-asc" <%= sort === 'rating-asc' ? 'selected' : '' %>>Rating - Ascending</option>
+            <option value="rating-desc" <%= sort === 'rating-desc' ? 'selected' : '' %>>Rating - Descending</option>
+        </select>
+    </div>
+
+</form>
 <div id="history-container">
     <% locations.forEach(location => { %>
         <div class="location-div clickable" data-lat="<%= location.latitude %>" data-long="<%= location.longitude %>">

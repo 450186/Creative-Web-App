@@ -306,6 +306,9 @@ app.post("/remove-wishlist", checkLogin, async (req, res) => {
 
 app.get("/history", checkLogin, async (req, res) => {
     let username = req.session.username
+    const sort = req.query.sort || "date-desc"
+
+    const convertTime = (date) => date ? new Date(date).getTime() : 0;
 
     let allLocations = await userModel.userData.findOne({username: username}, {
         _id: 0,
@@ -319,6 +322,32 @@ app.get("/history", checkLogin, async (req, res) => {
         formattedEnd: format(loc.dateVisited.endDate)
     }))
 
+    switch (sort) {
+        case "date-asc":
+            formatLocation.sort((a, b) => convertTime(a.dateVisited.startDate) - convertTime(b.dateVisited.startDate));
+            break;
+        case "date-desc":
+            formatLocation.sort((a, b) => convertTime(b.dateVisited.startDate) - convertTime(a.dateVisited.startDate));
+            break;
+        case "rating-asc":
+            formatLocation.sort((a, b) => a.rating - b.rating);
+            break;
+        case "rating-desc":
+            formatLocation.sort((a, b) => b.rating - a.rating);
+            break;
+        case "city-asc":
+            formatLocation.sort((a, b) => a.city.localeCompare(b.city));
+            break;
+        case "city-desc":
+            formatLocation.sort((a, b) => b.city.localeCompare(a.city));
+            break;
+        default:
+            // Default to date-desc if sort parameter is unrecognized
+            formatLocation.sort((a, b) => convertTime(b.dateVisited.startDate) - convertTime(a.dateVisited.startDate));
+            break;
+    }
+
+    req.session.sortPref = sort
 
     console.log(allLocations.PlacesVisited)
     res.render('pages/history', {
@@ -326,6 +355,8 @@ app.get("/history", checkLogin, async (req, res) => {
         Loggedin: checkLoggedin(req),
         title: "History",
         locations: formatLocation,
+        sort,
+        sortPreference: req.session.sortPref
     })
 })
 
@@ -340,7 +371,6 @@ app.get("/api/things-to-do", async (req, res) => {
     }
 })
 
-
 app.get("/location", checkLogin ,async (req, res) => {
 
     const {latitude, longitude} = req.query
@@ -354,9 +384,15 @@ app.get("/location", checkLogin ,async (req, res) => {
     const [User, nominatimRes] = await Promise.all([
         userModel.userData.findOne({username}),
         fetch(NomURL, {
-            headers: {"User-Agent" : "GlobeJumper"}
+            headers: {"User-Agent" : "GlobeJumper/1.0 (contact: jack.simcox23@bathspa.ac.uk)"}
         })
     ])
+
+    if(!nominatimRes.ok) {
+        const body = await nominatimRes.text()
+        console.error("Nominatim API error:", nominatimRes.status, body.slice(0, 200))
+        return res.status(500).send("Location lookup failed. Check server logs.");
+    }
     
     if(!User) {
         console.error("User not found!")
@@ -366,16 +402,39 @@ app.get("/location", checkLogin ,async (req, res) => {
     const nominatimData = await nominatimRes.json()
     const data = nominatimData
 
-    const City = data.address?.city || data.address?.town || data.address?.village || data.address?.municipality || data.address?.county
+    const Place =
+        data.address?.city ||
+        data.address?.town ||
+        data.address?.village ||
+        data.address?.municipality ||
+        data.address?.locality ||
+        data.address?.hamlet ||
+        data.address?.suburb ||
+        data.address?.county ||
+        data.address?.state ||
+        data.address?.region;
+
     const Country = data.address?.country
+    const State = data.address?.state || null;
+
+    if (!Country) {
+        req.session.errorMessage = "Your dart landed somewhere with no nearby city info — try again!";
+        return res.redirect("/home");
+    } 
 
     const countryCode = data.address?.country_code 
     ? data.address.country_code.toUpperCase()
     : null;
 
-    const inWishlist = User.wishList.some(location => location.city === City && location.country === Country);
+    let cityOutput = Place;
 
-    const locationVisited = User.PlacesVisited.find(location => location.city === City && location.country === Country)
+    if(countryCode === "US" && State && Place) {
+        cityOutput = `${Place}, ${State}`;
+    }
+
+    const inWishlist = User.wishList.some(location => location.city === Place && location.country === Country);
+
+    const locationVisited = User.PlacesVisited.find(location => location.city === Place && location.country === Country)
     const locationFound = !!locationVisited;
 
         let visitedData = null;
@@ -393,7 +452,7 @@ app.get("/location", checkLogin ,async (req, res) => {
             title: Country,
             latitude: Number(latitude),
             longitude: Number(longitude),
-            city: City || "",
+            city: cityOutput || "",
             country: Country,
             countryCode: countryCode,
             wishList: User.wishList || [],
@@ -403,8 +462,10 @@ app.get("/location", checkLogin ,async (req, res) => {
         });  
 
 } catch (e) {
-    console.error("Error fetching API data: ", e)
-    res.redirect('/home')
+    // console.error("Error fetching API data: ", e)
+    // res.redirect('/home')
+    console.error("Error fetching API data: ", e);
+    return res.status(500).send("Location lookup failed. Check server logs.");
     }
 })
 
@@ -466,7 +527,7 @@ app.get("/search-location", checkLogin, async (req, res) => {
 
     try {
         const response = await fetch(searchUrl, {
-            headers: {"User-Agent": "GlobeJumper"}
+            headers: {"User-Agent": "GlobeJumper/1.0 (contact: jack.simcox23@bathspa.ac.uk)"}
         })
 
         const searchRes = await response.json()
@@ -599,11 +660,11 @@ app.post("/delete-location", checkLogin, async (req, res) => {
     res.redirect("/home")
 })
 
-app.get("/settings", (req, res) => {
-    res.render('pages/settings', {
+app.get("/suggestions", (req, res) => {
+    res.render('pages/suggestions', {
         username: req.session.username,
         Loggedin: checkLoggedin(req),
-        title: "Settings",
+        title: "Suggestions",
     })
 })
 
@@ -742,6 +803,18 @@ app.post('/delete-user', checkLogin, async (req, res) => {
 
     await userModel.deleteUser(User.username)
     res.redirect('/user-deleted')
+})
+
+app.get('/where-to', checkLogin, async (req, res) => {
+    const username = req.session.username
+    const user = await userModel.userData.findOne({username: username}, {preferences: 1})
+
+    res.render('pages/whereTo', {
+        username: username,
+        Loggedin: checkLoggedin(req),
+        title: "Where To?",
+        preferences: user?.preferences || {}
+    })
 })
 
 app.get("/logout", checkLogin, (req, res) => {

@@ -1,7 +1,15 @@
+const e = require("express");
 const mongoose = require("mongoose");
 
 const {Schema, model} = mongoose;
 
+const PreferencesSchema = new Schema({
+    holidayType: {type: String, default: []},
+    budget: {type: Number, default: 2, min: 1, max: 5},
+    climates: {type: [String], default: []},
+    pace: {type: String, default: 'balanced'},
+    updatedAt: {type: Date, default: Date.now}
+})
 const PlacesVisitedSchema = new Schema({
     city: {type: String, required: true},
     country: {type: String, required: true},
@@ -14,7 +22,7 @@ const PlacesVisitedSchema = new Schema({
     countryCode: {type: String, required: true},
     photos: [{type: String}],
     notes: {type: String},
-    rating: {type: Number, min: 1, max: 5},
+    rating: {type: Number, min: 1, max: 3},
 })
 const WishListSchema = new Schema({
     city: {type: String, required: true},
@@ -30,7 +38,8 @@ const userSchema = new Schema({
     firstName: String,
     lastName: String,
     PlacesVisited: [PlacesVisitedSchema],
-    wishList: [WishListSchema]
+    wishList: [WishListSchema],
+    preferences: {type: PreferencesSchema, default: () => ({})},
 })
 
 const userData = model("user", userSchema);
