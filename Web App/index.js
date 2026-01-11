@@ -186,6 +186,8 @@ async function findThingsToDo(latitude, longitude) {
     return thingsToDo
 }
 
+// Suggestion algorithm helped by chatGPT
+// Prompt: I have a list of travel destinations, each with attributes like holiday types, climates, budget, and pace, how can I create a suggestion algorithm in JavaScript that scores and ranks these destinations based on user preferences for holiday types, climates, budget, and pace?
 function getSuggestions(destinations, prefs) {
   return destinations
     .map(d => {

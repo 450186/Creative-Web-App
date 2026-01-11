@@ -1,4 +1,5 @@
 <%- include("../partials/header") %>
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/confetti.css">
     
     <h3 style="text-align: center;"> <%= city %> </h3>
 
@@ -41,7 +42,7 @@
         <h2 style="line-height: 1;"><span>Add <%= city %></span><a href="javascript:void(0)" class="closebtn" onclick="closeDiv()">&times;</a></h2>
         <label for="visit-date">When did you visit?</label><br>
             
-        <input id="tripRange" type="text" placeholder="Select date range">
+        <input autocomplete="new-password" id="tripRange" type="text" placeholder="Select date range">
 
         <input type="hidden" name="visitDateStart" id="visitDateStart">
         <input type="hidden" name="visitDateEnd" id="visitDateEnd"><br>
@@ -315,7 +316,8 @@ if (yesRadio && noRadio && locationForm && overlay) {
         const [start, end] = selectedDates;
         document.getElementById("visitDateStart").value = start ? start.toISOString().slice(0,10) : "";
         document.getElementById("visitDateEnd").value = end ? end.toISOString().slice(0,10) : "";
-    }
+    },
+    onOpen: (selectedDates, dateStr, instance) => instance.clear()
     });
 </script>
 <%- include("../partials/footer") %>

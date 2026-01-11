@@ -163,6 +163,9 @@ a:hover {
     transition: 0.3s;
     cursor: pointer;
 }
+.nav-header {
+    width: fit-content;
+}
 .sidenav-header .closebtn {
     cursor: pointer;
 }
@@ -749,6 +752,12 @@ input[name="holidayType"] {
 .leaflet-popup-close-button:hover {
     color: rgb(255, 3, 3) !important;
 }
+.popup-link {
+    display: block;
+    margin-top: 10px;
+    color: var(--accent-warm);
+    font-weight: bold;
+}
 
 #show-button {
     margin-right: 20px; 
@@ -774,6 +783,7 @@ input[name="holidayType"] {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 800;
 }
 
 .fact-slides, .slides {

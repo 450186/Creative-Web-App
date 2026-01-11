@@ -25,7 +25,7 @@
 </script>
 <form action="/search-location" method="GET" id="location-search">
     <div id="searchbar">
-        <input type="text" name="query" placeholder="Search for a City..." required>
+        <input autocomplete="country-name" type="text" name="query" placeholder="Search for a City..." required>
         <button type="submit" aria-label="Search">
             <i class="fa-solid fa-magnifying-glass fa-rotate-90"></i>
         </button>
@@ -164,15 +164,10 @@
         <br>
         <em>${location.country}</em>
         <br>
-        ${location.rating}⭐️`)
+        ${location.rating}⭐️<br>
+        <a class="popup-link" href="/location?latitude=${location.latitude}&longitude=${location.longitude}">View Location</a>
+        `)
         greenPins.push(green)
-
-        green.on('popupopen', function() {
-            const element = green.getPopup().getElement();
-            element.onclick= () => {
-                window.location.href = `/location?latitude=${location.latitude}&longitude=${location.longitude}`;
-            }
-        });
     });
 
     wishlistLocs.forEach(wishlistLoc => {
@@ -182,14 +177,10 @@
         .bindPopup(`<strong>${wishlistLoc.city}</strong>
         <br>
         <em>${wishlistLoc.country}</em>
-        <br>`)
+        <br>
+        <a class="popup-link" href="/location?latitude=${wishlistLoc.latitude}&longitude=${wishlistLoc.longitude}">View Location</a>
+        `)
         goldPins.push(gold)
-        gold.on('popupopen', function() {
-            const element = gold.getPopup().getElement();
-            element.onclick = () => {
-                window.location.href = `/location?latitude=${wishlistLoc.latitude}&longitude=${wishlistLoc.longitude}`;
-            }
-        });
     })
     function updateGreens() {
         if(greenCheck.checked) {
