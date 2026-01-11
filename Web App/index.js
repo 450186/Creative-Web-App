@@ -252,7 +252,8 @@ app.get("/home", checkLogin, async (req, res) => {
         title: "Home",
         locations: locationData.PlacesVisited ?? [],
         wishList: locationData.wishList ?? [],
-        errorMessage: errorMessage
+        errorMessage: errorMessage,
+        successMessage: req.session.successMessage
     })
     req.session.errorMessage = null
 })
@@ -275,15 +276,19 @@ app.get("/wishlist", checkLogin, async (req, res) => {
 })
 
 app.post("/add-wishlist", checkLogin, async (req, res) => {
+    const {
+        city,
+        country,
+        longitude,
+        latitude,
+        countryCode,
+    } = req.body
     try{
-        const {
-            city,
-            country,
-            longitude,
-            latitude,
-            countryCode,
-        } = req.body
 
+    if (!city || !country || !longitude || !latitude) {
+      req.session.errorMessage = "Missing location data.";
+      return res.redirect("/home");
+    }
         const lat = Number(latitude)
         const lng = Number(longitude)
 
@@ -307,14 +312,9 @@ app.post("/add-wishlist", checkLogin, async (req, res) => {
         res.redirect('/home')
 
     } catch (e) {
-        console.error("Could not add to Wishlist!")
-        res.render('pages/home', {
-            city,
-            errorMessage: req.session.errorMessage = "Could not add to Wishlist!",
-            username: req.session.username,
-            title: "Home",
-            Loggedin: checkLoggedin(req)
-        })
+        console.error("Could not add to Wishlist!", e)
+        req.session.errorMessage = "Could not add to Wishlist!"
+        res.redirect('/home')
     }
 })
 

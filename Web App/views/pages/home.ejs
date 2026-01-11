@@ -36,7 +36,7 @@
         <div id="map"></div>
         <button class="map-fab" id="toggle-dart" type="button">Dart Mode: OFF</button>
     </div>
-    <div id="location-data" data-wishlist="<%= JSON.stringify(wishList) %>" data-locations="<%= JSON.stringify(locations) %>"></div>
+    <div id="location-data" data-wishlist="<%= JSON.stringify(wishList || []) %>" data-locations="<%= JSON.stringify(locations || []) %>"></div>
     <div id="key-div">
         <h3>Key:</h3>
         <div class="key">

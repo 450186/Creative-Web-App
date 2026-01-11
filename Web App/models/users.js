@@ -19,10 +19,10 @@ const PlacesVisitedSchema = new Schema({
     },
     longitude: {type: Number, required: true},
     latitude: {type: Number, required: true},
-    countryCode: {type: String, required: true},
+    countryCode: {type: String, default: ''},
     photos: [{type: String}],
     notes: {type: String},
-    rating: {type: Number, min: 1, max: 3},
+    rating: {type: Number, min: 1, max: 5},
 })
 const WishListSchema = new Schema({
     city: {type: String, required: true},

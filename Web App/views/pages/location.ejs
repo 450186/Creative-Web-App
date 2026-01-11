@@ -4,7 +4,7 @@
     <h3 style="text-align: center;"> <%= city %> </h3>
 
 <% if (!locationFound) { %>
-     <form id="wishlist-form" action="<%= inWishlist ? '/remove-wishlist' : 'add-wishlist' %>" method="POST">
+     <form id="wishlist-form" action="<%= inWishlist ? '/remove-wishlist' : '/add-wishlist' %>" method="POST">
         <input type="hidden" name="city" value="<%= city || "" %>">
         <input type="hidden" name="country" value="<%= country %>">
         <input type="hidden" name="longitude" value="<%= longitude %>">
