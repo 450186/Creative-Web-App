@@ -31,6 +31,18 @@
             <p class="label">End Date</p>
             <p class="value"><%= location.formattedEnd %></p>
 
+            <% if (location.photos.length > 0) { %>
+                <div id="image-modal" class="modal" onclick="closeImg()">
+                    <img id="modal-img">
+                </div>
+                <p id="photo-label" class="label">Photos</p>
+                <div class="gallery value">
+                    <% location.photos.forEach(photo => { %>
+                            <img src="<%= photo %>" alt="<%= location.city %>" class="location-photo">
+                    <% }) %>
+                </div>
+            <% } %>
+
             <p class="label">Opinions:</p>
             <p class="value"><%= location.notes %></p>
             
