@@ -1,0 +1,1563 @@
+[
+  {
+    "id": "london_gb",
+    "city": "London",
+    "country": "United Kingdom",
+    "countryCode": "GB",
+    "region": "Europe",
+    "lat": 51.5074,
+    "lon": -0.1278,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "edinburgh_gb",
+    "city": "Edinburgh",
+    "country": "United Kingdom",
+    "countryCode": "GB",
+    "region": "Europe",
+    "lat": 55.9533,
+    "lon": -3.1883,
+    "holidayTypes": [
+      "city",
+      "nature"
+    ],
+    "climates": [
+      "cold",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "slow"
+    ]
+  },
+  {
+    "id": "paris_fr",
+    "city": "Paris",
+    "country": "France",
+    "countryCode": "FR",
+    "region": "Europe",
+    "lat": 48.8566,
+    "lon": 2.3522,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "nice_fr",
+    "city": "Nice",
+    "country": "France",
+    "countryCode": "FR",
+    "region": "Europe",
+    "lat": 43.7102,
+    "lon": 7.262,
+    "holidayTypes": [
+      "beach",
+      "city"
+    ],
+    "climates": [
+      "warm",
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "slow",
+      "balanced"
+    ]
+  },
+  {
+    "id": "barcelona_es",
+    "city": "Barcelona",
+    "country": "Spain",
+    "countryCode": "ES",
+    "region": "Europe",
+    "lat": 41.3851,
+    "lon": 2.1734,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "madrid_es",
+    "city": "Madrid",
+    "country": "Spain",
+    "countryCode": "ES",
+    "region": "Europe",
+    "lat": 40.4168,
+    "lon": -3.7038,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "lisbon_pt",
+    "city": "Lisbon",
+    "country": "Portugal",
+    "countryCode": "PT",
+    "region": "Europe",
+    "lat": 38.7223,
+    "lon": -9.1393,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "slow"
+    ]
+  },
+  {
+    "id": "porto_pt",
+    "city": "Porto",
+    "country": "Portugal",
+    "countryCode": "PT",
+    "region": "Europe",
+    "lat": 41.1579,
+    "lon": -8.6291,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "slow"
+    ]
+  },
+  {
+    "id": "rome_it",
+    "city": "Rome",
+    "country": "Italy",
+    "countryCode": "IT",
+    "region": "Europe",
+    "lat": 41.9028,
+    "lon": 12.4964,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "florence_it",
+    "city": "Florence",
+    "country": "Italy",
+    "countryCode": "IT",
+    "region": "Europe",
+    "lat": 43.7696,
+    "lon": 11.2558,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "slow"
+    ]
+  },
+  {
+    "id": "venice_it",
+    "city": "Venice",
+    "country": "Italy",
+    "countryCode": "IT",
+    "region": "Europe",
+    "lat": 45.4408,
+    "lon": 12.3155,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "slow",
+      "balanced"
+    ]
+  },
+  {
+    "id": "milan_it",
+    "city": "Milan",
+    "country": "Italy",
+    "countryCode": "IT",
+    "region": "Europe",
+    "lat": 45.4642,
+    "lon": 9.19,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate",
+      "cold"
+    ],
+    "budget": 3,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "athens_gr",
+    "city": "Athens",
+    "country": "Greece",
+    "countryCode": "GR",
+    "region": "Europe",
+    "lat": 37.9838,
+    "lon": 23.7275,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "fast"
+    ]
+  },
+  {
+    "id": "santorini_gr",
+    "city": "Santorini",
+    "country": "Greece",
+    "countryCode": "GR",
+    "region": "Europe",
+    "lat": 36.3932,
+    "lon": 25.4615,
+    "holidayTypes": [
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 3,
+    "pace": [
+      "slow"
+    ]
+  },
+  {
+    "id": "dubrovnik_hr",
+    "city": "Dubrovnik",
+    "country": "Croatia",
+    "countryCode": "HR",
+    "region": "Europe",
+    "lat": 42.6507,
+    "lon": 18.0944,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "slow",
+      "balanced"
+    ]
+  },
+  {
+    "id": "prague_cz",
+    "city": "Prague",
+    "country": "Czechia",
+    "countryCode": "CZ",
+    "region": "Europe",
+    "lat": 50.0755,
+    "lon": 14.4378,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "cold",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "fast"
+    ]
+  },
+  {
+    "id": "vienna_at",
+    "city": "Vienna",
+    "country": "Austria",
+    "countryCode": "AT",
+    "region": "Europe",
+    "lat": 48.2082,
+    "lon": 16.3738,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "cold",
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "budapest_hu",
+    "city": "Budapest",
+    "country": "Hungary",
+    "countryCode": "HU",
+    "region": "Europe",
+    "lat": 47.4979,
+    "lon": 19.0402,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "cold",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "fast"
+    ]
+  },
+  {
+    "id": "amsterdam_nl",
+    "city": "Amsterdam",
+    "country": "Netherlands",
+    "countryCode": "NL",
+    "region": "Europe",
+    "lat": 52.3676,
+    "lon": 4.9041,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "berlin_de",
+    "city": "Berlin",
+    "country": "Germany",
+    "countryCode": "DE",
+    "region": "Europe",
+    "lat": 52.52,
+    "lon": 13.405,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "cold",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "munich_de",
+    "city": "Munich",
+    "country": "Germany",
+    "countryCode": "DE",
+    "region": "Europe",
+    "lat": 48.1351,
+    "lon": 11.582,
+    "holidayTypes": [
+      "city",
+      "nature"
+    ],
+    "climates": [
+      "cold",
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "zurich_ch",
+    "city": "Zurich",
+    "country": "Switzerland",
+    "countryCode": "CH",
+    "region": "Europe",
+    "lat": 47.3769,
+    "lon": 8.5417,
+    "holidayTypes": [
+      "city",
+      "nature"
+    ],
+    "climates": [
+      "cold",
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "reykjavik_is",
+    "city": "Reykjavik",
+    "country": "Iceland",
+    "countryCode": "IS",
+    "region": "Europe",
+    "lat": 64.1466,
+    "lon": -21.9426,
+    "holidayTypes": [
+      "adventure",
+      "nature"
+    ],
+    "climates": [
+      "cold"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced",
+      "slow"
+    ]
+  },
+  {
+    "id": "stockholm_se",
+    "city": "Stockholm",
+    "country": "Sweden",
+    "countryCode": "SE",
+    "region": "Europe",
+    "lat": 59.3293,
+    "lon": 18.0686,
+    "holidayTypes": [
+      "city",
+      "nature"
+    ],
+    "climates": [
+      "cold"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "copenhagen_dk",
+    "city": "Copenhagen",
+    "country": "Denmark",
+    "countryCode": "DK",
+    "region": "Europe",
+    "lat": 55.6761,
+    "lon": 12.5683,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "cold",
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "oslo_no",
+    "city": "Oslo",
+    "country": "Norway",
+    "countryCode": "NO",
+    "region": "Europe",
+    "lat": 59.9139,
+    "lon": 10.7522,
+    "holidayTypes": [
+      "city",
+      "nature"
+    ],
+    "climates": [
+      "cold"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "dublin_ie",
+    "city": "Dublin",
+    "country": "Ireland",
+    "countryCode": "IE",
+    "region": "Europe",
+    "lat": 53.3498,
+    "lon": -6.2603,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced",
+      "fast"
+    ]
+  },
+  {
+    "id": "brussels_be",
+    "city": "Brussels",
+    "country": "Belgium",
+    "countryCode": "BE",
+    "region": "Europe",
+    "lat": 50.8503,
+    "lon": 4.3517,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "warsaw_pl",
+    "city": "Warsaw",
+    "country": "Poland",
+    "countryCode": "PL",
+    "region": "Europe",
+    "lat": 52.2297,
+    "lon": 21.0122,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "cold",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "fast"
+    ]
+  },
+  {
+    "id": "helsinki_fi",
+    "city": "Helsinki",
+    "country": "Finland",
+    "countryCode": "FI",
+    "region": "Europe",
+    "lat": 60.1699,
+    "lon": 24.9384,
+    "holidayTypes": [
+      "city",
+      "nature"
+    ],
+    "climates": [
+      "cold"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "tallinn_ee",
+    "city": "Tallinn",
+    "country": "Estonia",
+    "countryCode": "EE",
+    "region": "Europe",
+    "lat": 59.437,
+    "lon": 24.7536,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "cold"
+    ],
+    "budget": 2,
+    "pace": [
+      "slow",
+      "balanced"
+    ]
+  },
+  {
+    "id": "riga_lv",
+    "city": "Riga",
+    "country": "Latvia",
+    "countryCode": "LV",
+    "region": "Europe",
+    "lat": 56.9496,
+    "lon": 24.1052,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "cold"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "vilnius_lt",
+    "city": "Vilnius",
+    "country": "Lithuania",
+    "countryCode": "LT",
+    "region": "Europe",
+    "lat": 54.6872,
+    "lon": 25.2797,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "cold"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "istanbul_tr",
+    "city": "Istanbul",
+    "country": "Turkey",
+    "countryCode": "TR",
+    "region": "Europe/Asia",
+    "lat": 41.0082,
+    "lon": 28.9784,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "antalya_tr",
+    "city": "Antalya",
+    "country": "Turkey",
+    "countryCode": "TR",
+    "region": "Europe/Asia",
+    "lat": 36.8969,
+    "lon": 30.7133,
+    "holidayTypes": [
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "slow",
+      "balanced"
+    ]
+  },
+  {
+    "id": "marrakech_ma",
+    "city": "Marrakech",
+    "country": "Morocco",
+    "countryCode": "MA",
+    "region": "Africa",
+    "lat": 31.6295,
+    "lon": -7.9811,
+    "holidayTypes": [
+      "city",
+      "adventure"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "fast"
+    ]
+  },
+  {
+    "id": "cairo_eg",
+    "city": "Cairo",
+    "country": "Egypt",
+    "countryCode": "EG",
+    "region": "Africa",
+    "lat": 30.0444,
+    "lon": 31.2357,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "cape_town_za",
+    "city": "Cape Town",
+    "country": "South Africa",
+    "countryCode": "ZA",
+    "region": "Africa",
+    "lat": -33.9249,
+    "lon": 18.4241,
+    "holidayTypes": [
+      "city",
+      "nature",
+      "beach"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "slow"
+    ]
+  },
+  {
+    "id": "nairobi_ke",
+    "city": "Nairobi",
+    "country": "Kenya",
+    "countryCode": "KE",
+    "region": "Africa",
+    "lat": -1.2921,
+    "lon": 36.8219,
+    "holidayTypes": [
+      "adventure",
+      "nature"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "zanzibar_city_tz",
+    "city": "Zanzibar City",
+    "country": "Tanzania",
+    "countryCode": "TZ",
+    "region": "Africa",
+    "lat": -6.1659,
+    "lon": 39.2026,
+    "holidayTypes": [
+      "beach",
+      "nature"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "slow"
+    ]
+  },
+  {
+    "id": "victoria_sc",
+    "city": "Victoria",
+    "country": "Seychelles",
+    "countryCode": "SC",
+    "region": "Africa",
+    "lat": -4.6191,
+    "lon": 55.4513,
+    "holidayTypes": [
+      "beach",
+      "nature"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 3,
+    "pace": [
+      "slow"
+    ]
+  },
+  {
+    "id": "port_louis_mu",
+    "city": "Port Louis",
+    "country": "Mauritius",
+    "countryCode": "MU",
+    "region": "Africa",
+    "lat": -20.1609,
+    "lon": 57.5012,
+    "holidayTypes": [
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 3,
+    "pace": [
+      "slow"
+    ]
+  },
+  {
+    "id": "accra_gh",
+    "city": "Accra",
+    "country": "Ghana",
+    "countryCode": "GH",
+    "region": "Africa",
+    "lat": 5.6037,
+    "lon": -0.187,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "lagos_ng",
+    "city": "Lagos",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "region": "Africa",
+    "lat": 6.5244,
+    "lon": 3.3792,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "addis_ababa_et",
+    "city": "Addis Ababa",
+    "country": "Ethiopia",
+    "countryCode": "ET",
+    "region": "Africa",
+    "lat": 8.9806,
+    "lon": 38.7578,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 1,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "tunis_tn",
+    "city": "Tunis",
+    "country": "Tunisia",
+    "countryCode": "TN",
+    "region": "Africa",
+    "lat": 36.8065,
+    "lon": 10.1815,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "algiers_dz",
+    "city": "Algiers",
+    "country": "Algeria",
+    "countryCode": "DZ",
+    "region": "Africa",
+    "lat": 36.7538,
+    "lon": 3.0588,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm",
+      "temperate"
+    ],
+    "budget": 1,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "dubai_ae",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "countryCode": "AE",
+    "region": "Middle East",
+    "lat": 25.2048,
+    "lon": 55.2708,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 3,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "doha_qa",
+    "city": "Doha",
+    "country": "Qatar",
+    "countryCode": "QA",
+    "region": "Middle East",
+    "lat": 25.2854,
+    "lon": 51.531,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "muscat_om",
+    "city": "Muscat",
+    "country": "Oman",
+    "countryCode": "OM",
+    "region": "Middle East",
+    "lat": 23.588,
+    "lon": 58.3829,
+    "holidayTypes": [
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "slow",
+      "balanced"
+    ]
+  },
+  {
+    "id": "amman_jo",
+    "city": "Amman",
+    "country": "Jordan",
+    "countryCode": "JO",
+    "region": "Middle East",
+    "lat": 31.9454,
+    "lon": 35.9284,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "wadi_musa_jo",
+    "city": "Wadi Musa",
+    "country": "Jordan",
+    "countryCode": "JO",
+    "region": "Middle East",
+    "lat": 30.322,
+    "lon": 35.4784,
+    "holidayTypes": [
+      "adventure"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "tel_aviv_il",
+    "city": "Tel Aviv",
+    "country": "Israel",
+    "countryCode": "IL",
+    "region": "Middle East",
+    "lat": 32.0853,
+    "lon": 34.7818,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm",
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "beirut_lb",
+    "city": "Beirut",
+    "country": "Lebanon",
+    "countryCode": "LB",
+    "region": "Middle East",
+    "lat": 33.8938,
+    "lon": 35.5018,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "riyadh_sa",
+    "city": "Riyadh",
+    "country": "Saudi Arabia",
+    "countryCode": "SA",
+    "region": "Middle East",
+    "lat": 24.7136,
+    "lon": 46.6753,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "fast"
+    ]
+  },
+  {
+    "id": "mumbai_in",
+    "city": "Mumbai",
+    "country": "India",
+    "countryCode": "IN",
+    "region": "Asia",
+    "lat": 19.076,
+    "lon": 72.8777,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "delhi_in",
+    "city": "Delhi",
+    "country": "India",
+    "countryCode": "IN",
+    "region": "Asia",
+    "lat": 28.6139,
+    "lon": 77.209,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm",
+      "temperate"
+    ],
+    "budget": 1,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "jaipur_in",
+    "city": "Jaipur",
+    "country": "India",
+    "countryCode": "IN",
+    "region": "Asia",
+    "lat": 26.9124,
+    "lon": 75.7873,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "goa_in",
+    "city": "Goa",
+    "country": "India",
+    "countryCode": "IN",
+    "region": "Asia",
+    "lat": 15.2993,
+    "lon": 74.124,
+    "holidayTypes": [
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "slow"
+    ]
+  },
+  {
+    "id": "kathmandu_np",
+    "city": "Kathmandu",
+    "country": "Nepal",
+    "countryCode": "NP",
+    "region": "Asia",
+    "lat": 27.7172,
+    "lon": 85.324,
+    "holidayTypes": [
+      "adventure"
+    ],
+    "climates": [
+      "temperate",
+      "cold"
+    ],
+    "budget": 1,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "bangkok_th",
+    "city": "Bangkok",
+    "country": "Thailand",
+    "countryCode": "TH",
+    "region": "Asia",
+    "lat": 13.7563,
+    "lon": 100.5018,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "chiang_mai_th",
+    "city": "Chiang Mai",
+    "country": "Thailand",
+    "countryCode": "TH",
+    "region": "Asia",
+    "lat": 18.7883,
+    "lon": 98.9853,
+    "holidayTypes": [
+      "city",
+      "nature"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "balanced",
+      "slow"
+    ]
+  },
+  {
+    "id": "phuket_th",
+    "city": "Phuket",
+    "country": "Thailand",
+    "countryCode": "TH",
+    "region": "Asia",
+    "lat": 7.8804,
+    "lon": 98.3923,
+    "holidayTypes": [
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "slow"
+    ]
+  },
+  {
+    "id": "hanoi_vn",
+    "city": "Hanoi",
+    "country": "Vietnam",
+    "countryCode": "VN",
+    "region": "Asia",
+    "lat": 21.0278,
+    "lon": 105.8342,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm",
+      "temperate"
+    ],
+    "budget": 1,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "ho_chi_minh_city_vn",
+    "city": "Ho Chi Minh City",
+    "country": "Vietnam",
+    "countryCode": "VN",
+    "region": "Asia",
+    "lat": 10.8231,
+    "lon": 106.6297,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "da_nang_vn",
+    "city": "Da Nang",
+    "country": "Vietnam",
+    "countryCode": "VN",
+    "region": "Asia",
+    "lat": 16.0544,
+    "lon": 108.2022,
+    "holidayTypes": [
+      "beach",
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "balanced",
+      "slow"
+    ]
+  },
+  {
+    "id": "singapore_sg",
+    "city": "Singapore",
+    "country": "Singapore",
+    "countryCode": "SG",
+    "region": "Asia",
+    "lat": 1.3521,
+    "lon": 103.8198,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 3,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "kuala_lumpur_my",
+    "city": "Kuala Lumpur",
+    "country": "Malaysia",
+    "countryCode": "MY",
+    "region": "Asia",
+    "lat": 3.139,
+    "lon": 101.6869,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "penang_my",
+    "city": "Penang",
+    "country": "Malaysia",
+    "countryCode": "MY",
+    "region": "Asia",
+    "lat": 5.4141,
+    "lon": 100.3288,
+    "holidayTypes": [
+      "city",
+      "beach"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "slow"
+    ]
+  },
+  {
+    "id": "denpasar_id",
+    "city": "Denpasar",
+    "country": "Indonesia",
+    "countryCode": "ID",
+    "region": "Asia",
+    "lat": -8.6705,
+    "lon": 115.2126,
+    "holidayTypes": [
+      "beach",
+      "nature"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 2,
+    "pace": [
+      "slow"
+    ]
+  },
+  {
+    "id": "jakarta_id",
+    "city": "Jakarta",
+    "country": "Indonesia",
+    "countryCode": "ID",
+    "region": "Asia",
+    "lat": -6.2088,
+    "lon": 106.8456,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "fast"
+    ]
+  },
+  {
+    "id": "manila_ph",
+    "city": "Manila",
+    "country": "Philippines",
+    "countryCode": "PH",
+    "region": "Asia",
+    "lat": 14.5995,
+    "lon": 120.9842,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "cebu_city_ph",
+    "city": "Cebu City",
+    "country": "Philippines",
+    "countryCode": "PH",
+    "region": "Asia",
+    "lat": 10.3157,
+    "lon": 123.8854,
+    "holidayTypes": [
+      "beach",
+      "city"
+    ],
+    "climates": [
+      "warm"
+    ],
+    "budget": 1,
+    "pace": [
+      "balanced",
+      "slow"
+    ]
+  },
+  {
+    "id": "tokyo_jp",
+    "city": "Tokyo",
+    "country": "Japan",
+    "countryCode": "JP",
+    "region": "Asia",
+    "lat": 35.6762,
+    "lon": 139.6503,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "fast"
+    ]
+  },
+  {
+    "id": "kyoto_jp",
+    "city": "Kyoto",
+    "country": "Japan",
+    "countryCode": "JP",
+    "region": "Asia",
+    "lat": 35.0116,
+    "lon": 135.7681,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "balanced"
+    ]
+  },
+  {
+    "id": "osaka_jp",
+    "city": "Osaka",
+    "country": "Japan",
+    "countryCode": "JP",
+    "region": "Asia",
+    "lat": 34.6937,
+    "lon": 135.5023,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "temperate"
+    ],
+    "budget": 3,
+    "pace": [
+      "fast",
+      "balanced"
+    ]
+  },
+  {
+    "id": "sapporo_jp",
+    "city": "Sapporo",
+    "country": "Japan",
+    "countryCode": "JP",
+    "region": "Asia",
+    "lat": 43.0618,
+    "lon": 141.3545,
+    "holidayTypes": [
+      "city"
+    ],
+    "climates": [
+      "cold",
+      "temperate"
+    ],
+    "budget": 2,
+    "pace": [
+      "balanced",
+      "slow"
+    ]
+  }
+]

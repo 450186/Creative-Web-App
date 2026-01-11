@@ -51,6 +51,7 @@ app.use(session({
 const connectionString = `mongodb+srv://${mongoDBusername}:${mongoDBpassword}@web-app-cluster.krmiigl.mongodb.net/${mongoAppName}?retryWrites=true&w=majority`;
 const mongoose = require("mongoose");
 const { title } = require("process")
+const destinations = require("./data/destinations.json");
 
 mongoose.connect(connectionString)
 .catch((err) => {
@@ -185,6 +186,35 @@ async function findThingsToDo(latitude, longitude) {
     return thingsToDo
 }
 
+function getSuggestions(destinations, prefs) {
+  return destinations
+    .map(d => {
+      let score = 0;
+
+      if (prefs.holidayTypes?.length) {
+        score += prefs.holidayTypes.filter(t => d.holidayTypes?.includes(t)).length * 3;
+      }
+
+      if (prefs.climates?.length) {
+        score += prefs.climates.filter(c => d.climates?.includes(c)).length * 2;
+      }
+
+      if (typeof prefs.budget === "number" && typeof d.budget === "number") {
+        score += Math.max(0, 3 - Math.abs(d.budget - prefs.budget));
+      }
+
+      if (prefs.pace && d.pace?.includes(prefs.pace)) {
+        score += 2;
+      }
+
+      return { ...d, score };
+    })
+    .filter(d => d.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5);
+}
+
+
 app.get("/", (req, res) => {
     res.render('pages/landing', {
         title: "Welcome!"
@@ -200,11 +230,19 @@ app.get("/home", checkLogin, async (req, res) => {
 
     let username = req.session.username
 
+    const errorMessage = req.session.errorMessage;
+    req.session.errorMessage = null;
+
     let locationData = await userModel.userData.findOne({username: username}, {
         _id: 0,
         password: 0,
         __v: 0
     })
+    if (!locationData) {
+        req.session.errorMessage = "Account data not found. Please log in again.";
+        req.session.destroy();
+        return res.redirect("/landing");
+  }
 
     res.render('pages/home', {
         username: username,
@@ -212,7 +250,7 @@ app.get("/home", checkLogin, async (req, res) => {
         title: "Home",
         locations: locationData.PlacesVisited ?? [],
         wishList: locationData.wishList ?? [],
-        errorMessage: req.session.errorMessage
+        errorMessage: errorMessage
     })
     req.session.errorMessage = null
 })
@@ -698,20 +736,21 @@ app.post("/login", async (req, res) => {
     if(!user) {
         return res.render('pages/login', {
             title: "Login",
-            errorMessage: req.session.errorMessage = "This user does not exist!",
+            errorMessage: "This user does not exist!",
         })
     }
     const isValid = await bcrypt.compare(password, user.password)
 
     if(!isValid) {
-        req.session.errorMessage = "Incorrect password, please try again!"
         return res.render('pages/login', {
             title: "Login",
-            errorMessage: req.session.errorMessage,
+            errorMessage: "Incorrect password, please try again!",
         })
     }
 
     req.session.username = req.body.username
+    req.session.errorMessage = null;
+
     res.redirect("/home")
 });
 
@@ -809,13 +848,59 @@ app.get('/where-to', checkLogin, async (req, res) => {
     const username = req.session.username
     const user = await userModel.userData.findOne({username: username}, {preferences: 1})
 
+    //allow suggestions to only be updated when user requests it, not every time the page reloads
+    const showSuggestions = req.query.showSuggestions === "1"
+    const preferences = user?.preferences || {}
+    const suggestions = showSuggestions ? getSuggestions(destinations, preferences) : []
+
     res.render('pages/whereTo', {
         username: username,
         Loggedin: checkLoggedin(req),
         title: "Where To?",
-        preferences: user?.preferences || {}
+        preferences: preferences,
+        suggestions: suggestions
     })
 })
+app.patch('/api/save-preferences', checkLogin, async (req, res) => {
+  const username = req.session.username;
+  const incoming = req.body || {};
+
+  const update = {
+    "preferences.updatedAt": new Date(),
+  };
+
+  if ("holidayTypes" in incoming) {
+    update["preferences.holidayTypes"] = Array.isArray(incoming.holidayTypes) ? incoming.holidayTypes.map(String) : [];
+  }
+
+  if ("climates" in incoming) {
+    update["preferences.climates"] = Array.isArray(incoming.climates) ? incoming.climates.map(String) : [];
+  }
+
+  if ("budget" in incoming) {
+    const n = Number(incoming.budget);
+    update["preferences.budget"] = Number.isFinite(n) ? Math.max(1, Math.min(3, n)) : 2;
+  }
+
+  if ("pace" in incoming) {
+    const v = incoming.pace;
+    update["preferences.pace"] = ["slow", "balanced", "fast"].includes(v) ? v : "balanced";
+  }
+
+  try {
+    const updated = await userModel.userData.findOneAndUpdate(
+      { username },
+      { $set: update },
+      { new: true, projection: { preferences: 1, _id: 0 } }
+    );
+
+    return res.json({ ok: true, preferences: updated.preferences });
+  } catch (e) {
+    console.error("Error saving preferences:", e);
+    return res.status(500).json({ ok: false, error: "Could not save preferences" });
+  }
+});
+
 
 app.get("/logout", checkLogin, (req, res) => {
     req.session.destroy();

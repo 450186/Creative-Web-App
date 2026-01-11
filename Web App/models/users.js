@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const {Schema, model} = mongoose;
 
 const PreferencesSchema = new Schema({
-    holidayType: {type: String, default: []},
+    holidayTypes: {type: [String], default: []},
     budget: {type: Number, default: 2, min: 1, max: 5},
     climates: {type: [String], default: []},
     pace: {type: String, default: 'balanced'},
@@ -37,33 +37,34 @@ const userSchema = new Schema({
     password: String,
     firstName: String,
     lastName: String,
-    PlacesVisited: [PlacesVisitedSchema],
-    wishList: [WishListSchema],
-    preferences: {type: PreferencesSchema, default: () => ({})},
+    PlacesVisited: {type:[PlacesVisitedSchema], default: []},
+    wishList: {type:[WishListSchema], default: []},
+    preferences: {type: PreferencesSchema, default: {}},
 })
 
 const userData = model("user", userSchema);
 
 async function addUser(username, password, firstName, lastName) {
-    let userExists = null;
+  const userExists = await userData.findOne({ username }).exec();
+  if (userExists) return false;
 
-    userExists = await userData.findOne({username: username}).exec();
-
-    if(userExists) {
-        console.log("User already exists");
-        return false;
-    } else {
-        let newUser = new userData({
-            username: username,
-            password: password,
-            firstName: firstName,
-            lastName: lastName,
-        });    
-            await userData.create(newUser)
-            .catch((err) => {console.log("Error adding user: " + err);});
-            return true;
-    }
+  try {
+    await userData.create({
+      username,
+      password,
+      firstName,
+      lastName,
+      PlacesVisited: [],
+      wishList: [],
+      preferences: {},
+    });
+    return true;
+  } catch (err) {
+    console.log("Error adding user:", err);
+    return false; 
+  }
 }
+
 
 async function deleteUser(username) {
     return await userData.deleteOne({username: username}).exec()

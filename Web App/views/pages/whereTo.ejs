@@ -2,23 +2,25 @@
 <div class="where-to-container">
     <p style="text-align: center;">Set your preferences and let us suggest your next holiday destination!</p>
     
-    <form id="preferences-form" data-preferences="<%= JSON.stringify(preferences || {}) %>" autocomplete="off">
+    <p id="save-status" style="text-align:center; opacity:0.8;"></p>
+    <div id="prefs-container">
+    <form id="preferences-form" method="POST" action="/where-to" data-preferences="<%= JSON.stringify(preferences || {}) %>" autocomplete="off">
         <h3>Holiday Type</h3>
             <div class="pref-form-row">
             <label>Beach</label>
-            <input type="checkbox" name="holidayType" value="beach">
+            <input type="checkbox" name="holidayTypes" value="beach">
             </div>
             <div class="pref-form-row">
             <label>City</label>
-            <input type="checkbox" name="holidayType" value="city">
+            <input type="checkbox" name="holidayTypes" value="city">
             </div>
             <div class="pref-form-row">
             <label>Adventure</label>
-            <input type="checkbox" name="holidayType" value="adventure">
+            <input type="checkbox" name="holidayTypes" value="adventure">
             </div>
             <div class="pref-form-row">
             <label>Nature</label>
-            <input type="checkbox" name="holidayType" value="nature">
+            <input type="checkbox" name="holidayTypes" value="nature">
             </div>
         <h3>Budget</h3>
         <input type="range" id="budget" name="budget" min="1" max="3" value="2">
@@ -27,15 +29,15 @@
         <h3>Climate</h3>
         <div class="pref-form-row">
         <label>Warm</label>
-        <input type="checkbox" name="climate" value="warm">
+        <input type="checkbox" name="climates" value="warm">
         </div>
         <div class="pref-form-row">
         <label>Temperate</label>
-        <input type="checkbox" name="climate" value="temperate">
+        <input type="checkbox" name="climates" value="temperate">
         </div>
         <div class="pref-form-row">
         <label>Cold</label>
-        <input type="checkbox" name="climate" value="cold">
+        <input type="checkbox" name="climates" value="cold">
         </div>
         <h3>Pace</h3>
         <div class="pref-form-row">
@@ -50,25 +52,156 @@
         <label>Fast</label>
         <input type="radio" name="pace" value="fast">
         </div>
+        <button 
+        style="width: 25%; margin: 20px auto;" 
+        type="button" 
+        id="get-suggestions">Get Suggestions</button>
     </form>
+    </div>
+
+    <% if (suggestions && suggestions.length > 0) { %>
+    <div id="suggestions-container">
+        <h2 style="text-align: center; margin-top: 40px;">Suggested Destinations</h2>
+        <h3 style="text-align: center;">Top 5:</h3>
+        <% suggestions.forEach((dest, index) => { %>
+         <div 
+         class="location-div clickable" 
+         style="width: 60%; margin-bottom: 20px; margin-left: auto; margin-right: auto;"
+         data-lat="<%= dest.lat %>" 
+         data-long="<%= dest.lon %>">
+            <div class="span2">
+                <h1 class="ranking">
+                    <% if (index === 0) { %>
+                        1st Place 🥇
+                    <% } else if (index === 1) { %>
+                        2nd Place 🥈
+                    <% } else if (index === 2) { %>
+                        3rd Place 🥉
+                    <% } else { %>
+                        <%= (index + 1) %>th Place
+                    <% } %>
+                </h1>
+                <h2><%= dest.country %></h2>
+                <h3><%= dest.city %></h3>
+            </div>
+         </div>
+        <% }) %>
+         <button 
+         style="width: 20%; margin: 20px auto; align-self: center;"
+         type="button" 
+         id="change-prefs">Change Preferences</button>
+    </div>
+    <% } %>
 </div>
 <script>
 
-    const form = document.getElementById('preferences-form');
-    const preferences = form.dataset.preferences ? JSON.parse(form.dataset.preferences) : {};
-    const budget = form.querySelector('input[name="budget"]');
-    const budgetLabel = document.getElementById('budget-label');
-
-    budgetLabel.innerText = budgetLabelUpdate(budget.value);
-
-    function budgetLabelUpdate(value) {
-        if (value == 1) return "Low";
-        if (value == 2) return "Medium";
-        if (value == 3) return "High";
+    if (window.location.search.includes("showSuggestions=1")) {
+        history.replaceState({}, "", "/where-to");
     }
-    budget.addEventListener('change', (e) => {
-        budgetLabel.innerText = budgetLabelUpdate(e.target.value);
+
+
+  const prefsContainer = document.getElementById("prefs-container");
+  const suggestionsContainer = document.getElementById("suggestions-container");
+  const changePrefsBtn = document.getElementById("change-prefs");
+
+  // On page load: if suggestions are showing, hide the prefs form
+  if (suggestionsContainer) {
+    prefsContainer.style.display = "none";
+  }
+
+  function showPrefsHideSuggestions() {
+    if (prefsContainer) prefsContainer.style.display = "block";
+    if (suggestionsContainer) suggestionsContainer.style.display = "none";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  changePrefsBtn?.addEventListener("click", showPrefsHideSuggestions);
+
+
+
+
+    let locationDivs = document.querySelectorAll(".location-div")
+    locationDivs.forEach(div =>{
+        div.addEventListener("click", () => {
+            const lat = div.dataset.lat;
+            const long = div.dataset.long;
+            window.location.href = `/location?latitude=${lat}&longitude=${long}`
+        })
+    })
+  const form = document.getElementById('preferences-form');
+  const preferences = form.dataset.preferences ? JSON.parse(form.dataset.preferences) : {};
+  const budget = form.querySelector('input[name="budget"]');
+  const budgetLabel = document.getElementById('budget-label');
+
+  function budgetLabelUpdate(value) {
+    if (value == 1) return "Low";
+    if (value == 2) return "Medium";
+    if (value == 3) return "High";
+  }
+
+  budgetLabel.innerText = budgetLabelUpdate(budget.value);
+  budget.addEventListener('input', (e) => {
+    budgetLabel.innerText = budgetLabelUpdate(e.target.value);
+  });
+
+  function preferenceValues(prefs) {
+    const holidayTypes = prefs.holidayTypes || [];
+    const typeCheckboxes = form.querySelectorAll('input[name="holidayTypes"]');
+    typeCheckboxes.forEach(cb => cb.checked = holidayTypes.includes(cb.value));
+
+    const climates = prefs.climates || [];
+    const climateCheckboxes = form.querySelectorAll('input[name="climates"]');
+    climateCheckboxes.forEach(cb => cb.checked = climates.includes(cb.value));
+
+    if (prefs.pace) {
+      const paceRad = form.querySelector(`input[name="pace"][value="${prefs.pace}"]`);
+      if (paceRad) paceRad.checked = true;
+    }
+
+    if (prefs.budget) {
+      budget.value = prefs.budget;
+      budgetLabel.innerText = budgetLabelUpdate(prefs.budget);
+    }
+  }
+  preferenceValues(preferences);
+
+  function readPreferences() {
+    const holidayTypes = Array.from(form.querySelectorAll('input[name="holidayTypes"]:checked')).map(i => i.value);
+    const climates = Array.from(form.querySelectorAll('input[name="climates"]:checked')).map(i => i.value);
+    const pace = form.querySelector('input[name="pace"]:checked')?.value || null;
+    const budgetValue = Number(budget.value);
+    return { holidayTypes, climates, pace, budget: budgetValue };
+  }
+
+  async function savePreferences() {
+    const prefs = readPreferences();
+
+    const res = await fetch('/api/save-preferences', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(prefs)
+    });
+
+    if (!res.ok) throw new Error('Failed to save preferences');
+    return res.json();
+  }
+
+  const status = document.getElementById("save-status");
+
+    document.getElementById('get-suggestions').addEventListener('click', async () => {
+    try {
+        status.innerText = "Saving...";
+        await savePreferences();
+        status.innerText = "Saved! Loading suggestions...";
+        window.location.href = "/where-to?showSuggestions=1";
+
+    } catch (e) {
+        status.innerText = "Could not save preferences.";
+        console.error(e);
+    }
     });
 
 </script>
+
 <%- include('../partials/footer.ejs') %>

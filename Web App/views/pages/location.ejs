@@ -39,13 +39,12 @@
         <input type="hidden" name="longitude" value="<%= longitude %>">
         <input type="hidden" name="latitude" value="<%= latitude %>">
         <h2 style="line-height: 1;"><span>Add <%= city %></span><a href="javascript:void(0)" class="closebtn" onclick="closeDiv()">&times;</a></h2>
-        <label for="visit-date">When did you visit?</label>
+        <label for="visit-date">When did you visit?</label><br>
             
-        <div id="date-select">
-            <input type="date" id="visit-date-start" name="visitDateStart">
-            <label for="to-date">To:</label>
-            <input type="date" id="visit-date-end" name="visitDateEnd">
-        </div>
+        <input id="tripRange" type="text" placeholder="Select date range">
+
+        <input type="hidden" name="visitDateStart" id="visitDateStart">
+        <input type="hidden" name="visitDateEnd" id="visitDateEnd"><br>
         
         <label for="photos">Photos:</label>
         <span class="limit">Max: 3</span><br>
@@ -306,4 +305,17 @@ if (yesRadio && noRadio && locationForm && overlay) {
 
 
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+    flatpickr("#tripRange", {
+    mode: "range",
+    dateFormat: "Y-m-d",
+    allowInput: true,
+    onChange: (selectedDates, dateStr) => {
+        const [start, end] = selectedDates;
+        document.getElementById("visitDateStart").value = start ? start.toISOString().slice(0,10) : "";
+        document.getElementById("visitDateEnd").value = end ? end.toISOString().slice(0,10) : "";
+    }
+    });
+</script>
 <%- include("../partials/footer") %>

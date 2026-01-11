@@ -566,10 +566,21 @@ input[name="holidayType"] {
 }
 
 #notes-div {
-    display: inline-block;
+    display: grid;
+    align-items: start;
+    gap: 10px;
+    margin: 10px auto;
+    width: 60%;
+    grid-template-columns: fit-content 1fr;
 }
 #notes-div label {
-    vertical-align: text-top;
+    min-width: fit-content;
+    margin-top: 6px;
+}
+#notes-div textarea {
+    resize: vertical;
+    min-height: 120px;
+    width: 100%;
 }
 #searchbar {
     position: relative;
@@ -868,4 +879,11 @@ input[name="holidayType"] {
 #sort-select:hover {
     box-shadow: var(--shadow);
     background-color: var(--accent-warm-dark);
+}
+#suggestions-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+
 }
